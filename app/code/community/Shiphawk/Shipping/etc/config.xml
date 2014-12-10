@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Shiphawk_Shipping>
+            <version>0.1.0</version>
+        </Shiphawk_Shipping>
+    </modules>
+    <global>
+        <models>
+            <shiphawk_shipping>
+                <class>Shiphawk_Shipping_Model</class>
+            </shiphawk_shipping>
+        </models>
+        <helpers>
+            <shiphawk_shipping>
+                <class>Shiphawk_Shipping_Helper</class>
+            </shiphawk_shipping>
+        </helpers>
+    </global>
+    <default>
+        <carriers>
+            <shiphawk_shipping>
+                <active>1</active>
+                <sort_order>10</sort_order>
+                <model>shiphawk_shipping/carrier</model>
+                <title>Shiphawk Shipping Carrier</title>
+                <sort_order>10</sort_order>
+                <sallowspecific>1</sallowspecific>
+                <express_max_weight>3</express_max_weight>
+            </shiphawk_shipping>
+        </carriers>
+    </default>
+</config>
