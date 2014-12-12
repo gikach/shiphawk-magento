@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 class Shiphawk_Shipping_Model_Carrier
     extends Mage_Shipping_Model_Carrier_Abstract
@@ -62,6 +62,8 @@ class Shiphawk_Shipping_Model_Carrier
     {
         /** @var Mage_Shipping_Model_Rate_Result_Method $rate */
         $rate = Mage::getModel('shipping/rate_result_method');
+
+
 
         $rate->setCarrier($this->_code);
         $rate->setCarrierTitle($this->getConfigData('title'));

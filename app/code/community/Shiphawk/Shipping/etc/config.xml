@@ -11,12 +11,33 @@
                 <class>Shiphawk_Shipping_Model</class>
             </shiphawk_shipping>
         </models>
+        <resources>
+            <shiphawk_setup>
+                <setup>
+                    <module>Shiphawk_Shipping</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </shiphawk_setup>
+        </resources>
         <helpers>
             <shiphawk_shipping>
                 <class>Shiphawk_Shipping_Helper</class>
             </shiphawk_shipping>
         </helpers>
     </global>
+    <frontend>
+        <routers>
+            <Shiphawk_Shipping>
+                <use>standard</use>
+                <args>
+                    <module>Shiphawk_Shipping</module>
+                    <frontName>shiphawk</frontName>
+                </args>
+            </Shiphawk_Shipping>
+        </routers>
+    </frontend>
     <default>
         <carriers>
             <shiphawk_shipping>
