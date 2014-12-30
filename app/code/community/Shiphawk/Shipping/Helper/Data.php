@@ -3,16 +3,39 @@
 class Shiphawk_Shipping_Helper_Data extends
     Mage_Core_Helper_Abstract
 {
-    const XML_EXPRESS_MAX_WEIGHT = 'carriers/shiphawk_shipping/express_max_weight';
-
-
     /**
-     * Get max weight of single item for express shipping
+     * Get api key
      *
      * @return mixed
      */
-    public function getExpressMaxWeight()
+    public function getApiKey()
     {
-        return Mage::getStoreConfig(self::XML_EXPRESS_MAX_WEIGHT);
+        return Mage::getStoreConfig('carriers/shiphawk_shipping/api_key');
     }
+
+    /**
+     * Get api url
+     *
+     * @return mixed
+     */
+    public function getApiUrl()
+    {
+        return 'https://sandbox.shiphawk.com/api/v1/';
+    }
+
+    /**
+     * Get Shiphawk attributes codes
+     *
+     * @return array
+     */
+    public function getAttributes()
+    {
+        $shiphawk_attributes = array('shiphawk_length','shiphawk_width', 'shiphawk_height', 'shiphawk_origin_zipcode', 'shiphawk_origin_firstname', 'shiphawk_origin_lastname'
+        ,'shiphawk_origin_addressline1','shiphawk_origin_phonenum','shiphawk_origin_city','shiphawk_origin_state','shiphawk_type_of_product','shiphawk_type_of_product_value'
+        ,'shiphawk_quantity', 'shiphawk_item_value','shiphawk_item_is_packed');
+
+        return $shiphawk_attributes;
+    }
+
+
 }

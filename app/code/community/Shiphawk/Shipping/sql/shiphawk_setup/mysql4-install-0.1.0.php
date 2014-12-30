@@ -2,89 +2,222 @@
 $installer = Mage::getResourceModel('catalog/setup', 'catalog_setup');
 $installer->startSetup();
 
-
-
 $length_data = array (
     'attribute_set' =>  'Default',
-    'group' => 'General',
+    'group' => 'Shiphawk Attributes',
     'label'    => 'Length',
     'visible'     => true,
-    'type'     => 'varchar', // multiselect uses comma-sep storage
-    'input'    => 'text',
-    'system'   => false,
-    'required' => true,
-    'user_defined' => 1, //defaults to false; if true, define a group
-);
-
-$installer->addAttribute('catalog_product','length',$length_data);
-
-$width_data = array (
-    'attribute_set' =>  'Default',
-    'group' => 'General',
-    'label'    => 'Width',
-    'visible'     => true,
-    'type'     => 'varchar', // multiselect uses comma-sep storage
-    'input'    => 'text',
-    'system'   => false,
-    'required' => true,
-    'user_defined' => 1, //defaults to false; if true, define a group
-);
-
-$installer->addAttribute('catalog_product','width',$width_data);
-
-$height_data = array (
-    'attribute_set' =>  'Default',
-    'group' => 'General',
-    'label'    => 'Height',
-    'visible'     => true,
-    'type'     => 'varchar', // multiselect uses comma-sep storage
-    'input'    => 'text',
-    'system'   => false,
-    'required' => true,
-    'user_defined' => 1, //defaults to false; if true, define a group
-);
-
-$installer->addAttribute('catalog_product','height',$height_data);
-
-$zip_code_origin_data = array (
-    'attribute_set' =>  'Default',
-    'group' => 'General',
-    'label'    => 'Zip code origin',
-    'visible'     => true,
-    'type'     => 'varchar', // multiselect uses comma-sep storage
-    'input'    => 'text',
-    'system'   => false,
-    'required' => true,
-    'user_defined' => 1, //defaults to false; if true, define a group
-);
-
-$installer->addAttribute('catalog_product','zip_code_origin',$zip_code_origin_data);
-
-$type_of_product_data = array (
-    'attribute_set' =>  'Default',
-    'group' => 'General',
-    'label'    => 'Type of Product',
-    'visible'     => true,
-    'type'     => 'varchar', // multiselect uses comma-sep storage
-    'input'    => 'text',
-    'system'   => false,
-    'required' => true,
-    'user_defined' => 1, //defaults to false; if true, define a group
-);
-
-$installer->addAttribute('catalog_product','type_of_product',$type_of_product_data);
-
-$shiphawk_id_data = array (
-    'attribute_set' =>  'Default',
-    'label'    => 'Shiphawk Id',
-    'visible'     => false,
-    'type'     => 'varchar', // multiselect uses comma-sep storage
+    'type'     => 'varchar',
     'input'    => 'text',
     'system'   => false,
     'required' => false,
-    'user_defined' => false, //defaults to false; if true, define a group
+    'user_defined' => 1,
 );
 
-$installer->addAttribute('catalog_product','shiphawk_id',$shiphawk_id_data);
+$installer->addAttribute('catalog_product','shiphawk_length',$length_data);
 
+$width_data = array (
+    'attribute_set' =>  'Default',
+    'group' => 'Shiphawk Attributes',
+    'label'    => 'Width',
+    'visible'     => true,
+    'type'     => 'varchar',
+    'input'    => 'text',
+    'system'   => false,
+    'required' => false,
+    'user_defined' => 1,
+);
+
+$installer->addAttribute('catalog_product','shiphawk_width',$width_data);
+
+$height_data = array (
+    'attribute_set' =>  'Default',
+    'group' => 'Shiphawk Attributes',
+    'label'    => 'Height',
+    'visible'     => true,
+    'type'     => 'varchar',
+    'input'    => 'text',
+    'system'   => false,
+    'required' => false,
+    'user_defined' => 1,
+);
+
+$installer->addAttribute('catalog_product','shiphawk_height',$height_data);
+
+$zip_code_origin_data = array (
+    'attribute_set' =>  'Default',
+    'group' => 'Shiphawk Attributes',
+    'label'    => 'Origin Zipcode',
+    'visible'     => true,
+    'type'     => 'varchar',
+    'input'    => 'text',
+    'system'   => false,
+    'required' => false,
+    'user_defined' => 1,
+);
+
+$installer->addAttribute('catalog_product','shiphawk_origin_zipcode',$zip_code_origin_data);
+
+$firstname_origin_data = array (
+    'attribute_set' =>  'Default',
+    'group' => 'Shiphawk Attributes',
+    'label'    => 'First Name',
+    'visible'     => true,
+    'type'     => 'varchar',
+    'input'    => 'text',
+    'system'   => false,
+    'required' => false,
+    'user_defined' => 1,
+);
+
+$installer->addAttribute('catalog_product','shiphawk_origin_firstname',$firstname_origin_data);
+
+$last_name_origin_data = array (
+    'attribute_set' =>  'Default',
+    'group' => 'Shiphawk Attributes',
+    'label'    => 'Last Name',
+    'visible'     => true,
+    'type'     => 'varchar',
+    'input'    => 'text',
+    'system'   => false,
+    'required' => false,
+    'user_defined' => 1,
+);
+
+$installer->addAttribute('catalog_product','shiphawk_origin_lastname',$last_name_origin_data);
+
+$address_line_1_origin_data = array (
+    'attribute_set' =>  'Default',
+    'group' => 'Shiphawk Attributes',
+    'label'    => 'Address',
+    'visible'     => true,
+    'type'     => 'varchar',
+    'input'    => 'text',
+    'system'   => false,
+    'required' => false,
+    'user_defined' => 1,
+);
+
+$installer->addAttribute('catalog_product','shiphawk_origin_addressline1',$address_line_1_origin_data);
+
+$phone_num_origin_data = array (
+    'attribute_set' =>  'Default',
+    'group' => 'Shiphawk Attributes',
+    'label'    => 'Phone number',
+    'visible'     => true,
+    'type'     => 'varchar',
+    'input'    => 'text',
+    'system'   => false,
+    'required' => false,
+    'user_defined' => 1,
+);
+
+$installer->addAttribute('catalog_product','shiphawk_origin_phonenum',$phone_num_origin_data);
+
+$city_origin_data = array (
+    'attribute_set' =>  'Default',
+    'group' => 'Shiphawk Attributes',
+    'label'    => 'City',
+    'visible'     => true,
+    'type'     => 'varchar',
+    'input'    => 'text',
+    'system'   => false,
+    'required' => false,
+    'user_defined' => 1,
+);
+
+$installer->addAttribute('catalog_product','shiphawk_origin_city',$city_origin_data);
+
+$state_origin_data = array (
+    'attribute_set' =>  'Default',
+    'group' => 'Shiphawk Attributes',
+    'label'    => 'State',
+    'visible'     => true,
+    'type'     => 'varchar',
+    'input'    => 'text',
+    'system'   => false,
+    'required' => false,
+    'user_defined' => 1,
+);
+
+$installer->addAttribute('catalog_product','shiphawk_origin_state',$state_origin_data);
+
+$type_of_product_data = array (
+    'attribute_set' =>  'Default',
+    'group' => 'Shiphawk Attributes',
+    'label'    => 'Type of Product',
+    'visible'     => true,
+    'type'     => 'varchar',
+    'input_renderer'    => 'shiphawk_shipping/catalog_product_helper_form_example',//definition of renderer
+    'input'    => 'text',
+    'system'   => false,
+    'required' => false,
+    'user_defined' => 1,
+);
+
+
+$installer->addAttribute('catalog_product','shiphawk_type_of_product',$type_of_product_data);
+
+$type_of_product_value = array (
+    'attribute_set' =>  'Default',
+    'group' => 'Shiphawk Attributes',
+    'label'    => 'Type of Product value',
+    'visible'     => true,
+    'type'     => 'varchar',
+    'input_renderer'    => 'shiphawk_shipping/catalog_product_helper_form_disabled',//definition of renderer
+    'input'    => 'text',
+    'system'   => false,
+    'required' => false,
+    'user_defined' => 1,
+);
+
+$installer->addAttribute('catalog_product','shiphawk_type_of_product_value',$type_of_product_value);
+
+$shiphawk_quantity_data = array (
+    'attribute_set' =>  'Default',
+    'group' => 'Shiphawk Attributes',
+    'label'    => 'Quantity',
+    'visible'     => true,
+    'type'     => 'int',
+    'input'    => 'text',
+    'default'   => 1,
+    'frontend_class' => 'validate-not-negative-number',
+    'system'   => false,
+    'required' => false,
+    'user_defined' => 1,
+);
+
+$installer->addAttribute('catalog_product','shiphawk_quantity', $shiphawk_quantity_data);
+
+$item_value_data = array (
+    'attribute_set' =>  'Default',
+    'group' => 'Shiphawk Attributes',
+    'label'    => 'Item Value',
+    'visible'     => true,
+    'type'     => 'varchar',
+    'frontend_class' => 'validate-number',
+    'input'    => 'text',
+    'system'   => false,
+    'required' => false,
+    'user_defined' => 1,
+);
+
+$installer->addAttribute('catalog_product','shiphawk_item_value', $item_value_data);
+
+$installer->addAttribute(Mage_Catalog_Model_Product::ENTITY, 'shiphawk_item_is_packed', array(
+    'group'         => 'Shiphawk Attributes',
+    'backend'       => 'catalog/product_attribute_backend_msrp',
+    'label'         => 'Item is packed?',
+    'input'         => 'select',
+    /*'source'        => 'eav/entity_attribute_source_boolean',*/
+    'source'        => 'catalog/product_attribute_source_msrp_type_enabled',
+    'type'     => 'varchar',
+    'visible'       => true,
+    'required'      => false,
+    'user_defined'  => 1,
+    'default'       => '2',
+    'input_renderer'   => 'adminhtml/catalog_product_helper_form_msrp_enabled',
+    'visible_on_front' => false
+));
+//TODO state attribute select
 $installer->endSetup();
