@@ -58,7 +58,7 @@ class Shiphawk_Shipping_Block_Catalog_Product_Helper_Form_Example extends Varien
     }
 
     public function getTypeUrl() {
-        return Mage::getUrl('shiphawk/index/getapi');
+        return Mage::getUrl('shiphawk/index/search');
     }
 
 }

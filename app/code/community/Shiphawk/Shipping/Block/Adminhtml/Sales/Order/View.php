@@ -5,23 +5,29 @@ class Shiphawk_Shipping_Block_Adminhtml_Sales_Order_View extends Mage_Adminhtml_
         parent::__construct();
 
         $order_id = $this->getOrderId();
+        $order = $this->getOrder();
 
         $manual_shipping =  Mage::getStoreConfig('carriers/shiphawk_shipping/book_shipment');
+        $shipping_code = $order->getShippingMethod();
 
-        if($manual_shipping) {
-            $this->_addButton('shiphawk_shipping', array(
-                'label'     => Mage::helper('shiphawk_shipping')->__('Shiphawk Shipment'),
-                /*'onclick'   => 'alert(\'' . $order_id . '\')',*/
-                'onclick'   => 'setLocation(\'' . $this->getShipHawkUrl($order_id) . '\')',
-                'class'     => 'go'
-            ), 0, 100, 'header', 'header');
-        }
+        $confirm_messsage = $this->__('Are you sure to process?');
+
+        if($shipping_code == 'shiphawk_shipping_ground')
+            if ($order->canShip()) {
+                if($manual_shipping) {
+                    $this->_addButton('shiphawk_shipping', array(
+                        'label'     => Mage::helper('shiphawk_shipping')->__('ShipHawk Shipment'),
+                        /*'onclick'   => 'alert(\'' . $order_id . '\')',*/
+                        /*'onclick'   => 'setLocation(\'' . $this->getShipHawkUrl($order_id) . '\')',*/
+                        'onclick' => "confirmSetLocation('{$confirm_messsage}', '{$this->getShipHawkUrl($order_id)}')",
+                        'class'     => 'go'
+                    ), 0, 100, 'header', 'header');
+                }
+            }
 
     }
 
     public function getShipHawkUrl($order_id) {
-        //
-        //return $this->getUrl('*/sales_order_shipment/start');
-        return Mage::helper("adminhtml")->getUrl("shiphawk_shipping/adminhtml/api/shipment", $order_id);
+        return Mage::helper("adminhtml")->getUrl("adminshiphawk/adminhtml_shipment/saveshipment", array('order_id' => $order_id));
     }
 }

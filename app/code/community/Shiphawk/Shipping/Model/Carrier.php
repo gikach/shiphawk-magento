@@ -35,29 +35,44 @@ class Shiphawk_Shipping_Model_Carrier
         $grouped_items_by_zip = $this->_getGroupedItemsByZip($items);
 
         $ship_responces = array();
+        $toOrder= array();
+        //$product_ids = array();
         foreach($grouped_items_by_zip as $from_zip=>$items_) {
-            $ship_responces[] =  $api->getShiphawkRate($from_zip, $to_zip, $items_);
+            $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_);
+            $ship_responces[] = $responceObject;
+
+          /*  foreach($items_ as $product_item) {
+                $product_ids[] = $product_item['product_id'];
+            }*/
+            $toOrder[$responceObject[0]->id]['product_ids'] = $this->_getProductIds($items_);
         }
 
+        Mage::log($toOrder, null, 'SSS2.log');
         $services = $this->_getServices($ship_responces);
 
         $name_service = '';
         $summ_price = 0;
-        $shiphawk_id = array();
+        //$shiphawk_id = array();
         foreach ($services as $id_service=>$service) {
             $name_service .= $service['name'] . ', ';
             $summ_price += $service['price'];
-            $shiphawk_id[] = $id_service;
+            //$shiphawk_id[] = $id_service;
             //$result->append($this->_getShiphawkRate($service['name'], $service['price']));
         }
-//TODO проверка на error (zip code ит.д)
-        Mage::getSingleton('core/session')->setShiphawkId(serialize($shiphawk_id));
+
+        //TODO проверка на error (zip code ит.д)
+
+        //Сохраняем rate_id для последующего toBook
+        //Mage::getSingleton('core/session')->setShiphawkBookId(serialize($shiphawk_id));
+
+        Mage::getSingleton('core/session')->setShiphawkBookId(serialize($toOrder));
+
         $result->append($this->_getShiphawkRate($name_service, $summ_price));
 
         Mage::log($services, null, 'ServiceARR.log');
         //$ship_responce = $api->getShiphawkRate($default_origin_zip, $to_zip, $items);
 
-        Mage::log($ship_responces, null, 'Responce.log');
+        //Mage::log($ship_responces, null, 'Responce.log');
 
        /*if(is_array($ship_responce)) {
            foreach($ship_responce as $object) {
@@ -80,6 +95,14 @@ class Shiphawk_Shipping_Model_Carrier
         );
     }
 
+    protected function  _getProductIds($_items) {
+     $products_ids = array();
+        foreach($_items as $_item) {
+            $products_ids[] = $_item['product_id'];
+        }
+        return $products_ids;
+    }
+
     /**
      * Get Standard rate object
      *
@@ -92,7 +115,7 @@ class Shiphawk_Shipping_Model_Carrier
 
         $rate->setCarrier($this->_code);
         $rate->setCarrierTitle($this->getConfigData('title'));
-        $rate->setMethod('ground');
+        $rate->setMethod('ground');//TODO
         $rate->setMethodTitle($method_title);
         $rate->setPrice($price);
         $rate->setCost(0);
@@ -115,7 +138,8 @@ class Shiphawk_Shipping_Model_Carrier
                 'quantity' => $product->getShiphawkQuantity()*$item->getQty(),
                 'is_packed' => $this->getIsPacked($product),
                 'id' => $product->getShiphawkTypeOfProductValue(),
-                'zip'=> $this->getOriginZip($product)
+                'zip'=> $this->getOriginZip($product),
+                'product_id'=> $product_id
             );
         }
 

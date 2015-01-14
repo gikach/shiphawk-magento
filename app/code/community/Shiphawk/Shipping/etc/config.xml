@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Shiphawk_Shipping>
-            <version>0.7.0</version>
+            <version>0.7.1</version>
         </Shiphawk_Shipping>
     </modules>
     <global>
@@ -18,6 +18,7 @@
             <adminhtml>
                 <rewrite>
                     <sales_order_view>Shiphawk_Shipping_Block_Adminhtml_Sales_Order_View</sales_order_view>
+                    <sales_order_shipment_view>Shiphawk_Shipping_Block_Adminhtml_Sales_Order_Shipment_View</sales_order_shipment_view>
                 </rewrite>
             </adminhtml>
         </blocks>
@@ -39,23 +40,23 @@
         <events>
             <admin_system_config_changed_section_carriers>
                 <observers>
-                    <shiphawk_shipping>
+                    <shiphawk_shipping_config_save>
                         <type>singleton</type>
                         <class>shiphawk_shipping/observer</class>
                         <method>configSaveAfter</method>
-                    </shiphawk_shipping>
+                    </shiphawk_shipping_config_save>
                 </observers>
             </admin_system_config_changed_section_carriers>
             <catalog_product_load_after>
                 <observers>
-                    <shiphawk_shipping>
+                    <shiphawk_shipping_lock_attributes>
                         <type>singleton</type>
                         <class>shiphawk_shipping/observer</class>
                         <method>lockAttributes</method>
-                    </shiphawk_shipping>
+                    </shiphawk_shipping_lock_attributes>
                 </observers>
             </catalog_product_load_after>
-            <checkout_onepage_controller_success_action>
+            <!--<checkout_onepage_controller_success_action>
                 <observers>
                     <shiphawk_shipping>
                         <type>singleton</type>
@@ -63,7 +64,16 @@
                         <method>saveShipHawkId</method>
                     </shiphawk_shipping>
                 </observers>
-            </checkout_onepage_controller_success_action>
+            </checkout_onepage_controller_success_action>-->
+            <sales_order_place_after>
+                <observers>
+                    <shiphawk_shipping_order_place>
+                        <type>singleton</type>
+                        <class>shiphawk_shipping/observer</class>
+                        <method>salesOrderPlaceAfter</method>
+                    </shiphawk_shipping_order_place>
+                </observers>
+            </sales_order_place_after>
         </events>
         <fieldsets>
             <sales_convert_quote>
@@ -89,7 +99,7 @@
             </Shiphawk_Shipping>
         </routers>
     </frontend>
-    <admin>
+    <!--<admin>
         <routers>
             <adminhtml>
                 <args>
@@ -99,6 +109,17 @@
                 </args>
             </adminhtml>
         </routers>
+    </admin>-->
+    <admin>
+        <routers>
+            <shiphawk_shipping>
+                <use>admin</use>
+                <args>
+                    <module>Shiphawk_Shipping</module>
+                    <frontName>adminshiphawk</frontName>
+                </args>
+            </shiphawk_shipping>
+        </routers>
     </admin>
     <default>
         <carriers>
@@ -107,11 +128,11 @@
                 <required_attribute>0</required_attribute>
                 <sort_order>10</sort_order>
                 <model>shiphawk_shipping/carrier</model>
-                <title>Shiphawk Shipping Carrier</title>
+                <title>ShipHawk Shipping Carrier</title>
                 <item_is_packed>1</item_is_packed>
                 <sort_order>10</sort_order>
                 <sallowspecific>1</sallowspecific>
-                <express_max_weight>3</express_max_weight>
+                <gateway_url>https://shiphawk.com/api/v1/</gateway_url>
             </shiphawk_shipping>
         </carriers>
     </default>

@@ -4,7 +4,6 @@ class Shiphawk_Shipping_Model_Observer extends Mage_Core_Model_Abstract
     public function configSaveAfter($observer){
 
         $is_requered_attr = Mage::getStoreConfig('carriers/shiphawk_shipping/required_attribute');
-
         $shiphawk_attributes = Mage::helper('shiphawk_shipping')->getAttributes();
 
         foreach($shiphawk_attributes as $attributeCode) {
@@ -17,6 +16,35 @@ class Shiphawk_Shipping_Model_Observer extends Mage_Core_Model_Abstract
         $attributeModel = Mage::getModel('eav/entity_attribute')->loadByCode( 'catalog_product', $attributeCode);
         $attributeModel->setIsRequired($is_active);
         $attributeModel->save();
+    }
+
+    public function salesOrderPlaceAfter($observer) {
+        $event = $observer->getEvent();
+        $order = $event->getOrder();
+        $orderId = $order->getId();
+        //ордер не виден в админке
+      //  $this->addShipping($orderId);
+
+        Mage::log('Place order after');
+        Mage::log($order->getId());
+
+        $shiphawk_book_id = Mage::getSingleton('core/session')->getShiphawkBookId();
+
+        Mage::log(unserialize($shiphawk_book_id));
+
+        $order->setShiphawkBookId($shiphawk_book_id);
+        $order->save();
+
+
+        $api = Mage::getModel('shiphawk_shipping/api');
+
+        $api->saveshipment($orderId);
+
+
+
+        Mage::log($order->getShiphawkBookId());
+        Mage::getSingleton('core/session')->unsShiphawkBookId();
+
     }
 
     public function saveShipHawkId() {
@@ -34,51 +62,9 @@ class Shiphawk_Shipping_Model_Observer extends Mage_Core_Model_Abstract
         Mage::getSingleton('core/session')->unsShiphawkId();
     }
 
-    public function addShiping($order){
-        $qty=array();
-        foreach($order->getAllItems() as $eachOrderItem){
+    public function addShipping($orderId){
 
-            $Itemqty=0;
-            $Itemqty = $eachOrderItem->getQtyOrdered()
-                - $eachOrderItem->getQtyShipped()
-                - $eachOrderItem->getQtyRefunded()
-                - $eachOrderItem->getQtyCanceled();
-            $qty[$eachOrderItem->getId()]=$Itemqty;
-
-        }
-
-        /*
-        echo "<pre>";
-        print_r($qty);
-        echo "</pre>";
-        */
-        /* check order shipment is prossiable or not */
-
-        $email=true;
-        $includeComment=true;
-        $comment="test Shipment";
-
-        if ($order->canShip()) {
-            /* @var $shipment Mage_Sales_Model_Order_Shipment */
-            /* prepare to create shipment */
-            $shipment = $order->prepareShipment($qty);
-            if ($shipment) {
-                $shipment->register();
-                $shipment->addComment($comment, $email && $includeComment);
-                $shipment->getOrder()->setIsInProcess(true);
-                try {
-                    $transactionSave = Mage::getModel('core/resource_transaction')
-                        ->addObject($shipment)
-                        ->addObject($shipment->getOrder())
-                        ->save();
-                    $shipment->sendEmail($email, ($includeComment ? $comment : ''));
-                } catch (Mage_Core_Exception $e) {
-                    var_dump($e);
-                }
-
-            }
-
-        }
+        //TODO перенос методов из контроллера шипмент
     }
 
     //lock attributes by code

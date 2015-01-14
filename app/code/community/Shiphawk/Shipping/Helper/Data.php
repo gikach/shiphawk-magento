@@ -14,13 +14,25 @@ class Shiphawk_Shipping_Helper_Data extends
     }
 
     /**
+     * Get callback url for shipments
+     *
+     * @return mixed
+     */
+    public function getCallbackUrl($api_key)
+    {
+        //return Mage::getUrl('shiphawk/index/tracking', array('api_key' => $api_key));
+        return Mage::getBaseUrl() . 'shiphawk/index/tracking?api_key=' . $api_key;
+    }
+
+    /**
      * Get api url
      *
      * @return mixed
      */
     public function getApiUrl()
     {
-        return 'https://sandbox.shiphawk.com/api/v1/';
+        //return 'https://sandbox.shiphawk.com/api/v1/';
+        return Mage::getStoreConfig('carriers/shiphawk_shipping/gateway_url');
     }
 
     /**
@@ -32,7 +44,7 @@ class Shiphawk_Shipping_Helper_Data extends
     {
         $shiphawk_attributes = array('shiphawk_length','shiphawk_width', 'shiphawk_height', 'shiphawk_origin_zipcode', 'shiphawk_origin_firstname', 'shiphawk_origin_lastname'
         ,'shiphawk_origin_addressline1','shiphawk_origin_phonenum','shiphawk_origin_city','shiphawk_origin_state','shiphawk_type_of_product','shiphawk_type_of_product_value'
-        ,'shiphawk_quantity', 'shiphawk_item_value','shiphawk_item_is_packed');
+        ,'shiphawk_quantity', 'shiphawk_item_value','shiphawk_item_is_packed','shiphawk_origin_location');
 
         return $shiphawk_attributes;
     }
