@@ -19,7 +19,7 @@ class Shiphawk_Shipping_Model_Carrier
      */
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
-        //TODO срабатывает 2 раза? записывать переменную в сессию
+
         /** @var Mage_Shipping_Model_Rate_Result $result */
         $result = Mage::getModel('shipping/rate_result');
 
@@ -30,55 +30,43 @@ class Shiphawk_Shipping_Model_Carrier
         $api = Mage::getModel('shiphawk_shipping/api');
         $items = $this->getShiphawkItems($request);
 
-        Mage::log($items, null, 'Items.log');
-
         $grouped_items_by_zip = $this->_getGroupedItemsByZip($items);
 
         $ship_responces = array();
         $toOrder= array();
-        //$product_ids = array();
+
         foreach($grouped_items_by_zip as $from_zip=>$items_) {
+
             $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_);
+
             $ship_responces[] = $responceObject;
 
-          /*  foreach($items_ as $product_item) {
-                $product_ids[] = $product_item['product_id'];
-            }*/
+            // get only one method for each group of product
             $toOrder[$responceObject[0]->id]['product_ids'] = $this->_getProductIds($items_);
+            $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->price;
+            $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->service;
+            $toOrder[$responceObject[0]->id]['items'] = $items_;
+            $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
+            $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
         }
 
-        Mage::log($toOrder, null, 'SSS2.log');
+        Mage::log($toOrder, null, 'ShiphawkBookId.log');
+
         $services = $this->_getServices($ship_responces);
 
         $name_service = '';
         $summ_price = 0;
-        //$shiphawk_id = array();
+
         foreach ($services as $id_service=>$service) {
             $name_service .= $service['name'] . ', ';
             $summ_price += $service['price'];
-            //$shiphawk_id[] = $id_service;
-            //$result->append($this->_getShiphawkRate($service['name'], $service['price']));
         }
 
-        //TODO проверка на error (zip code ит.д)
-
         //Сохраняем rate_id для последующего toBook
-        //Mage::getSingleton('core/session')->setShiphawkBookId(serialize($shiphawk_id));
-
         Mage::getSingleton('core/session')->setShiphawkBookId(serialize($toOrder));
 
-        $result->append($this->_getShiphawkRate($name_service, $summ_price));
-
-        Mage::log($services, null, 'ServiceARR.log');
-        //$ship_responce = $api->getShiphawkRate($default_origin_zip, $to_zip, $items);
-
-        //Mage::log($ship_responces, null, 'Responce.log');
-
-       /*if(is_array($ship_responce)) {
-           foreach($ship_responce as $object) {
-               $result->append($this->_getShiphawkRate($object->service, $object->price));
-           }
-       }*/
+        //TODO проверка на error (zip code ит.д)
+        $result->append($this->_getShiphawkRateObject($name_service, $summ_price));
 
         return $result;
     }
@@ -108,14 +96,14 @@ class Shiphawk_Shipping_Model_Carrier
      *
      * @return Mage_Shipping_Model_Rate_Result_Method
      */
-    protected function _getShiphawkRate($method_title, $price)
+    protected function _getShiphawkRateObject($method_title, $price)
     {
         /** @var Mage_Shipping_Model_Rate_Result_Method $rate */
         $rate = Mage::getModel('shipping/rate_result_method');
 
         $rate->setCarrier($this->_code);
         $rate->setCarrierTitle($this->getConfigData('title'));
-        $rate->setMethod('ground');//TODO
+        $rate->setMethod('ground');
         $rate->setMethodTitle($method_title);
         $rate->setPrice($price);
         $rate->setCost(0);
@@ -123,7 +111,7 @@ class Shiphawk_Shipping_Model_Carrier
         return $rate;
     }
 
-    public  function getShiphawkItems($request) {
+    public function getShiphawkItems($request) {
         $items = array();
 
         foreach ($request->getAllItems() as $item) {
@@ -186,11 +174,6 @@ class Shiphawk_Shipping_Model_Carrier
                 foreach($ship_responce as $object) {
                     $services[$object->id]['name'] = $object->service;
                     $services[$object->id]['price'] = $object->price;
-
-                    Mage::log($object->service, null, 'Service.log');
-                    Mage::log($object->price, null, 'Service.log');
-                    Mage::log($object->id, null, 'Service.log');
-
                 }
             }
         }

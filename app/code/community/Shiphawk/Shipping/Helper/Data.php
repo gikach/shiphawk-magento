@@ -20,8 +20,7 @@ class Shiphawk_Shipping_Helper_Data extends
      */
     public function getCallbackUrl($api_key)
     {
-        //return Mage::getUrl('shiphawk/index/tracking', array('api_key' => $api_key));
-        return Mage::getBaseUrl() . 'shiphawk/index/tracking?api_key=' . $api_key;
+        return Mage::getUrl('shiphawk/index/tracking', array('api_key' => $api_key));
     }
 
     /**

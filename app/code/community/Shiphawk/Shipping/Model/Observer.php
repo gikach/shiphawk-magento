@@ -22,25 +22,18 @@ class Shiphawk_Shipping_Model_Observer extends Mage_Core_Model_Abstract
         $event = $observer->getEvent();
         $order = $event->getOrder();
         $orderId = $order->getId();
-        //ордер не виден в админке
-      //  $this->addShipping($orderId);
 
-        Mage::log('Place order after');
-        Mage::log($order->getId());
-
+        /* set ShipHawk rate */
         $shiphawk_book_id = Mage::getSingleton('core/session')->getShiphawkBookId();
-
-        Mage::log(unserialize($shiphawk_book_id));
-
         $order->setShiphawkBookId($shiphawk_book_id);
         $order->save();
 
+        $manual_shipping =  Mage::getStoreConfig('carriers/shiphawk_shipping/book_shipment');
 
-        $api = Mage::getModel('shiphawk_shipping/api');
-
-        $api->saveshipment($orderId);
-
-
+        if(!$manual_shipping) {
+            $api = Mage::getModel('shiphawk_shipping/api');
+            $api->saveshipment($orderId);
+        }
 
         Mage::log($order->getShiphawkBookId());
         Mage::getSingleton('core/session')->unsShiphawkBookId();
@@ -60,11 +53,6 @@ class Shiphawk_Shipping_Model_Observer extends Mage_Core_Model_Abstract
         //$this->addShiping($order);
 
         Mage::getSingleton('core/session')->unsShiphawkId();
-    }
-
-    public function addShipping($orderId){
-
-        //TODO перенос методов из контроллера шипмент
     }
 
     //lock attributes by code

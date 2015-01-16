@@ -3,53 +3,34 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
 {
     public function trackingAction() {
 
-        $data_from_shiphawk = $this->getRequest()->getPost();
-
+        //  var_dump (file_get_contents('php://input'));
         $api_key_from_url = $this->getRequest()->getParam('api_key');
-
-        $data_from_shiphawk = $this->getRequest()->getPost();
-
-        /*
-         *  {
- "shipment_id":"1007505",
- "status": "ordered",
- "status_updates": [
- {
- "timestamp": "2014-07-25T09:07:59.514-07:00",
- "message": "booked"
- },
- {
- "timestamp": "2014-07-25T09:12:51.278-07:00",
- "message": "ordered"
-        */
+        $data_from_shiphawk = json_decode(file_get_contents('php://input'));
         $api_key = Mage::helper('shiphawk_shipping')->getApiKey();
 
-        //TODO проверка на апи ключ
-        /*if($api_key_from_url == $api_key) {
-                //TODO save post data to shipment comment
-        }*/
+        //curl -X POST -H Content-Type:application/json -d '{"event":"shipment.status_update","status":"in_transit","updated_at":"2015-01-14T10:43:16.702-08:00","shipment_id":1010226}' http://shiphawk.devigor.wdgtest.com/index.php/shiphawk/index/tracking?api_key=3331b35952ec7d99338a1cc5c496b55c
 
-        echo $api_key;
+        if($api_key_from_url == $api_key) {
+            try {
+            $track_number = $data_from_shiphawk->shipment_id;
+            $shipment_track = Mage::getResourceModel('sales/order_shipment_track_collection')->addAttributeToFilter('track_number', $track_number)->getFirstItem();
+            $shipment = Mage::getModel('sales/order_shipment')->load($shipment_track->getParentId());
+
+            $data_from_shiphawk = (array) $data_from_shiphawk;
+            $shipment->addComment(implode(',', $data_from_shiphawk));
+
+            //TODO email to customer?
+            //$shipment->sendUpdateEmail(!empty($data['is_customer_notified']), $data['comment']);
+            $shipment->save();
+            }catch (Mage_Core_Exception $e) {
+                Mage::logException($e->getMessage());
+            } catch (Exception $e) {
+                Mage::logException($e->getMessage());
+            }
+
+            Mage::log($data_from_shiphawk, null, 'ShipHawkTrackingData.log');
+        }
     }
-
-    public function testAction() {
-
-//North America
-        date_default_timezone_set('MST');
-
-//        echo date('Y-m-d', strtotime($myDate . ' +1 Weekday'));
-
-        echo date('Y-m-d', strtotime('now +1 Weekday'));
-
-        echo '<br/>';
-
-        echo $date = date('Y-m-d h:i:s a', time());
-
-        //'start_time' => '2015-07-27T04:51:36.645-07:00',
-        //'end_time' => '2015-07-27T07:51:36.645-07:00',
-
-    }
-
 
     /* suggest items type in product page */
     public function searchAction() {
@@ -90,9 +71,5 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
         curl_close($curl);
 
         $this->getResponse()->setBody($responce_html);
-
     }
-
-
 }
-//curl -H 'Content-Type: application/json' -XPOST -d '{"from_zip":"90210","to_zip":"02072","rate_filter":"consumer","items":[{"width":"10", "length":"10", "height":"10", "weight": "11", "value":"103", "id": "50"}]}' 'https://sandbox.shiphawk.com/api/v1/rates/full?api_key=3331b35952ec7d99338a1cc5c496b55c'
