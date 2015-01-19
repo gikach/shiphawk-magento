@@ -8,7 +8,7 @@ $type_of_product_data = array (
     'label'    => 'Type of Item',
     'visible'     => true,
     'type'     => 'varchar',
-    'input_renderer'    => 'shiphawk_shipping/catalog_product_helper_form_example',//definition of renderer
+    'input_renderer'    => 'shiphawk_shipping/catalog_product_helper_form_type',//definition of renderer
     'input'    => 'text',
     'system'   => false,
     'required' => false,
@@ -206,20 +206,6 @@ $zip_code_origin_data = array (
 );
 
 $installer->addAttribute('catalog_product','shiphawk_origin_zipcode',$zip_code_origin_data);
-
-$location_origin_data = array (
-    'attribute_set' =>  'Default',
-    'group' => 'ShipHawk Attributes',
-    'label'    => 'Origin Location Type',
-    'visible'     => true,
-    'type'     => 'varchar',
-    'input'    => 'text',
-    'system'   => false,
-    'required' => false,
-    'user_defined' => 1,
-);
-
-$installer->addAttribute('catalog_product','shiphawk_origin_location',$location_origin_data);
 
 $phone_num_origin_data = array (
     'attribute_set' =>  'Default',

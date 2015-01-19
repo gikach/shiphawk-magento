@@ -41,8 +41,6 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                     $shipment->addComment($resp);
                 }
 
-                //TODO email to customer?
-                //$shipment->sendUpdateEmail(!empty($data['is_customer_notified']), $data['comment']);
                 $shipment->save();
 
                 curl_close($curl);
@@ -95,7 +93,7 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
 
                     $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items']);
 
-                    //TODO get only one method for each group of product
+                    // get only one method for each group of product
                     $rate_id = $responceObject[0]->id;
 
                     // add book

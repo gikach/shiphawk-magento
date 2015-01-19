@@ -1,5 +1,5 @@
 <?php
-class Shiphawk_Shipping_Block_Catalog_Product_Helper_Form_Example extends Varien_Data_Form_Element_Text
+class Shiphawk_Shipping_Block_Catalog_Product_Helper_Form_Type extends Varien_Data_Form_Element_Text
 {
     public function getAfterElementHtml()
     {

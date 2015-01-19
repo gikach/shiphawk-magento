@@ -3,12 +3,44 @@ class Shiphawk_Shipping_Model_Observer extends Mage_Core_Model_Abstract
 {
     public function configSaveAfter($observer){
 
-        $is_requered_attr = Mage::getStoreConfig('carriers/shiphawk_shipping/required_attribute');
+        /*$is_requered_attr = Mage::getStoreConfig('carriers/shiphawk_shipping/required_attribute');
         $shiphawk_attributes = Mage::helper('shiphawk_shipping')->getAttributes();
 
         foreach($shiphawk_attributes as $attributeCode) {
             $this->_setAttributeRequired($attributeCode,$is_requered_attr);
+        }*/
+
+    }
+
+    public function setDefaultGroup() {
+
+        if(Mage::helper('core')->isModuleEnabled('Shiphawk_Shipping')) {
+            Mage::log('Enabled');
         }
+
+        $modules = Mage::getConfig()->getNode('modules')->children();
+        $modulesArray = (array)$modules;
+
+       // Mage::log($modulesArray);
+
+        if(!isset($modulesArray['Shiphawk_Shipping'])) {
+            //Mage::log('NOT Exist');
+        } else {
+            //Mage::log('NOT Exist');
+        }
+        /*
+        $attributeSetCollection = Mage::getResourceModel('eav/entity_attribute_group_collection')
+                              ->load();
+
+foreach ($attributeSetCollection as $id=>$attributeGroup) {
+    echo 'group-name: '; echo $attributeGroup->getAttributeGroupName();
+    echo '<br>';
+    echo 'group-id: '; echo $attributeGroup->getAttributeGroupId();
+    echo '<br>';
+    echo 'set-id: '; echo $attributeGroup->getAttributeSetId();
+    echo '<br>';
+}
+        */
 
     }
 
@@ -35,24 +67,22 @@ class Shiphawk_Shipping_Model_Observer extends Mage_Core_Model_Abstract
             $api->saveshipment($orderId);
         }
 
-        Mage::log($order->getShiphawkBookId());
         Mage::getSingleton('core/session')->unsShiphawkBookId();
 
     }
 
     public function saveShipHawkId() {
-//TODO возможно потому что не сохраняются сессии в этот метод не заходит
-        $ship_hawk_id = Mage::getSingleton('core/session')->getShiphawkId();
+        //do not enter in this event
+
+        /*$ship_hawk_id = Mage::getSingleton('core/session')->getShiphawkId();
         $order = Mage::getModel('sales/order')->load(Mage::getSingleton('checkout/session')->getLastOrderId());
 
         $order->setShiphawkApiId($ship_hawk_id);
         $order->save();
 
-        //Mage::log('order complete');
+        Mage::log('order complete');
 
-        //$this->addShiping($order);
-
-        Mage::getSingleton('core/session')->unsShiphawkId();
+        Mage::getSingleton('core/session')->unsShiphawkId();*/
     }
 
     //lock attributes by code

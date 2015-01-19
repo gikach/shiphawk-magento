@@ -62,10 +62,10 @@ class Shiphawk_Shipping_Model_Carrier
             $summ_price += $service['price'];
         }
 
-        //Сохраняем rate_id для последующего toBook
+        //save rate_id info for Book
         Mage::getSingleton('core/session')->setShiphawkBookId(serialize($toOrder));
 
-        //TODO проверка на error (zip code ит.д)
+        //TODO check wrong zip code etc.
         $result->append($this->_getShiphawkRateObject($name_service, $summ_price));
 
         return $result;

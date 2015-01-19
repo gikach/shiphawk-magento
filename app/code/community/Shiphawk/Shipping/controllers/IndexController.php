@@ -17,10 +17,29 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
             $shipment = Mage::getModel('sales/order_shipment')->load($shipment_track->getParentId());
 
             $data_from_shiphawk = (array) $data_from_shiphawk;
-            $shipment->addComment(implode(',', $data_from_shiphawk));
 
-            //TODO email to customer?
-            //$shipment->sendUpdateEmail(!empty($data['is_customer_notified']), $data['comment']);
+            $shipment_status_updates = Mage::getStoreConfig('carriers/shiphawk_shipping/shipment_status_updates');
+            $updates_tracking_url =    Mage::getStoreConfig('carriers/shiphawk_shipping/updates_tracking_url');
+            $comment = '';
+
+                if($data_from_shiphawk['event'] == 'shipment.status_update') {
+                    $comment = $data_from_shiphawk['updated_at'] . ': Status has been changed to ' . $data_from_shiphawk['status'];
+                    $shipment->addComment($comment);
+                    if($shipment_status_updates) {
+                        $shipment->sendUpdateEmail(true, $comment);
+                    }
+                }
+
+                if($data_from_shiphawk['event'] == 'shipment.tracking_update') {
+                    $comment = $data_from_shiphawk['updated_at'] . 'There is a tracking number available for your shipment - ' . $data_from_shiphawk['tracking_number'] . '<a href="' . $data_from_shiphawk['tracking_url'] . '" target="_blank">Click here to track.</a>';
+                    $shipment->addComment($comment);
+                    if($updates_tracking_url) {
+                        $shipment->sendUpdateEmail(true, $comment);
+                    }
+                }
+
+            //$shipment->addComment(implode(',', $data_from_shiphawk));
+
             $shipment->save();
             }catch (Mage_Core_Exception $e) {
                 Mage::logException($e->getMessage());
@@ -28,7 +47,6 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
                 Mage::logException($e->getMessage());
             }
 
-            Mage::log($data_from_shiphawk, null, 'ShipHawkTrackingData.log');
         }
     }
 
@@ -37,8 +55,9 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
 
         $search_tag = trim(strip_tags($this->getRequest()->getPost('search_tag')));
         $api_key = Mage::helper('shiphawk_shipping')->getApiKey();
+        $api_url = Mage::helper('shiphawk_shipping')->getApiUrl();
 
-        $url_api = 'https://sandbox.shiphawk.com/api/v1/items/search/'.$search_tag.'?api_key='.$api_key;
+        $url_api = $api_url . 'items/search/'.$search_tag.'?api_key='.$api_key;
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
