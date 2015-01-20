@@ -47,7 +47,7 @@
                     </shiphawk_shipping_config_save>
                 </observers>
             </admin_system_config_changed_section_carriers>
-            <catalog_product_load_after>
+           <!-- <catalog_product_load_after>
                 <observers>
                     <shiphawk_shipping_lock_attributes>
                         <type>singleton</type>
@@ -55,7 +55,7 @@
                         <method>lockAttributes</method>
                     </shiphawk_shipping_lock_attributes>
                 </observers>
-            </catalog_product_load_after>
+            </catalog_product_load_after>-->
             <!--<checkout_onepage_controller_success_action>
                 <observers>
                     <shiphawk_shipping>
@@ -74,7 +74,7 @@
                     </shiphawk_shipping_order_place>
                 </observers>
             </sales_order_place_after>
-            <admin_session_user_login_success>
+           <!-- <admin_session_user_login_success>
                 <observers>
                     <set_group>
                         <type>singleton</type>
@@ -82,7 +82,7 @@
                         <method>setDefaultGroup</method>
                     </set_group>
                 </observers>
-            </admin_session_user_login_success>
+            </admin_session_user_login_success>-->
         </events>
         <fieldsets>
             <sales_convert_quote>

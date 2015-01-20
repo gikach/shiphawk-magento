@@ -49,7 +49,7 @@ class Shiphawk_Shipping_Model_Carrier
             $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
             $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
         }
-
+        Mage::log($ship_responces, null, 'ShiphawkBookId.log');
         Mage::log($toOrder, null, 'ShiphawkBookId.log');
 
         $services = $this->_getServices($ship_responces);
