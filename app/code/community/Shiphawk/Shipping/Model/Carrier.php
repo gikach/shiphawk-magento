@@ -19,7 +19,6 @@ class Shiphawk_Shipping_Model_Carrier
      */
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
-
         /** @var Mage_Shipping_Model_Rate_Result $result */
         $result = Mage::getModel('shipping/rate_result');
 
@@ -34,40 +33,48 @@ class Shiphawk_Shipping_Model_Carrier
 
         $ship_responces = array();
         $toOrder= array();
+        $api_error = false;
 
-        foreach($grouped_items_by_zip as $from_zip=>$items_) {
+        try {
+            foreach($grouped_items_by_zip as $from_zip=>$items_) {
+                $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_);
+                $ship_responces[] = $responceObject;
 
-            $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_);
+                // get only one method for each group of product
+                if((!$responceObject->error)) {
+                    $toOrder[$responceObject[0]->id]['product_ids'] = $this->_getProductIds($items_);
+                    $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->price;
+                    $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->service;
+                    $toOrder[$responceObject[0]->id]['items'] = $items_;
+                    $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
+                    $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
+                }else{
+                    $api_error = true;
+                    Mage::log('ShipHawk rate error', null, 'ShipHawk.log');
+                }
+            }
 
-            $ship_responces[] = $responceObject;
+            if(!$api_error) {
+                $services = $this->_getServices($ship_responces);
+                $name_service = '';
+                $summ_price = 0;
 
-            // get only one method for each group of product
-            $toOrder[$responceObject[0]->id]['product_ids'] = $this->_getProductIds($items_);
-            $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->price;
-            $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->service;
-            $toOrder[$responceObject[0]->id]['items'] = $items_;
-            $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
-            $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
+                foreach ($services as $id_service=>$service) {
+                    $name_service .= $service['name'] . ', ';
+                    $summ_price += $service['price'];
+                }
+
+                //save rate_id info for Book
+                Mage::getSingleton('core/session')->setShiphawkBookId(serialize($toOrder));
+                //add ShipHawk shipping
+                $result->append($this->_getShiphawkRateObject($name_service, $summ_price));
+            }
+
+        }catch (Mage_Core_Exception $e) {
+            Mage::logException($e->getMessage());
+        } catch (Exception $e) {
+            Mage::logException($e->getMessage());
         }
-        Mage::log($ship_responces, null, 'ShiphawkBookId.log');
-        Mage::log($toOrder, null, 'ShiphawkBookId.log');
-
-        $services = $this->_getServices($ship_responces);
-
-        $name_service = '';
-        $summ_price = 0;
-
-        foreach ($services as $id_service=>$service) {
-            $name_service .= $service['name'] . ', ';
-            $summ_price += $service['price'];
-        }
-
-        //save rate_id info for Book
-        Mage::getSingleton('core/session')->setShiphawkBookId(serialize($toOrder));
-
-        //TODO check wrong zip code etc.
-        $result->append($this->_getShiphawkRateObject($name_service, $summ_price));
-
         return $result;
     }
 
@@ -117,18 +124,33 @@ class Shiphawk_Shipping_Model_Carrier
         foreach ($request->getAllItems() as $item) {
             $product_id = $item->getProductId();
             $product = Mage::getModel('catalog/product')->load($product_id);
-            $items[] = array(
-                'width' => $product->getShiphawkWidth(),
-                'length' => $product->getShiphawkLength(),
-                'height' => $product->getShiphawkHeight(),
-                'weight' => $product->getWeight(),
-                'value' => $product->getShiphawkItemValue(),
-                'quantity' => $product->getShiphawkQuantity()*$item->getQty(),
-                'is_packed' => $this->getIsPacked($product),
-                'id' => $product->getShiphawkTypeOfProductValue(),
-                'zip'=> $this->getOriginZip($product),
-                'product_id'=> $product_id
-            );
+            if($product->getWeight()) {
+                $items[] = array(
+                    'width' => $product->getShiphawkWidth(),
+                    'length' => $product->getShiphawkLength(),
+                    'height' => $product->getShiphawkHeight(),
+                    'weight' => $product->getWeight(),
+                    'value' => $product->getShiphawkItemValue(),
+                    'quantity' => $product->getShiphawkQuantity()*$item->getQty(),
+                    'is_packed' => $this->getIsPacked($product),
+                    'id' => $product->getShiphawkTypeOfProductValue(),
+                    'zip'=> $this->getOriginZip($product),
+                    'product_id'=> $product_id
+                );
+            }else{
+                $items[] = array(
+                    'width' => $product->getShiphawkWidth(),
+                    'length' => $product->getShiphawkLength(),
+                    'height' => $product->getShiphawkHeight(),
+                    'value' => $product->getShiphawkItemValue(),
+                    'quantity' => $product->getShiphawkQuantity()*$item->getQty(),
+                    'is_packed' => $this->getIsPacked($product),
+                    'id' => $product->getShiphawkTypeOfProductValue(),
+                    'zip'=> $this->getOriginZip($product),
+                    'product_id'=> $product_id
+                );
+            }
+
         }
 
         return $items;

@@ -19,11 +19,11 @@
     <events>
       <admin_session_user_login_success>
           <observers>
-              <set_group2>
+              <set_group>
                   <type>singleton</type>
                   <class>shiphawk_all/observer</class>
                   <method>setDefaultGroup</method>
-              </set_group2>
+              </set_group>
           </observers>
       </admin_session_user_login_success>
         <catalog_product_load_after>

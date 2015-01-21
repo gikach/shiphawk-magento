@@ -8,9 +8,21 @@ class Shiphawk_All_Model_Observer extends Mage_Core_Model_Abstract
                 Mage::log('Enabled');
             }else{
                 Mage::log('NOT Enabled');
+                $attributeSetCollection = Mage::getResourceModel('eav/entity_attribute_group_collection')
+                    ->addFieldToFilter('attribute_group_name', 'ShipHawk Attributes')
+                    ->load();
+                $select = $attributeSetCollection->getSelect()->__toString();
+                Mage::log($select);
+                foreach ($attributeSetCollection as $id=>$attributeGroup) {
+
+                    Mage::log('set-id: ' . $attributeGroup->getAttributeSetId(), null, 'AttributeGroup.log');
+                    Mage::log('group-name: ' . $attributeGroup->getAttributeGroupName(), null, 'AttributeGroup.log');
+                    Mage::log('group-id: ' . $attributeGroup->getAttributeGroupId(), null, 'AttributeGroup.log');
+
+                }
             }
 
-            $modules = Mage::getConfig()->getNode('modules')->children();
+            /*$modules = Mage::getConfig()->getNode('modules')->children();
             $modulesArray = (array)$modules;
 
             // Mage::log($modulesArray);
@@ -19,8 +31,9 @@ class Shiphawk_All_Model_Observer extends Mage_Core_Model_Abstract
                Mage::log(' Exist');
             } else {
                 Mage::log('NOT Exist');
-            }
+            }*/
             /*
+             * //eav_attribute_group table
             $attributeSetCollection = Mage::getResourceModel('eav/entity_attribute_group_collection')
                                   ->load();
 
