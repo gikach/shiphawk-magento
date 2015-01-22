@@ -89,6 +89,7 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
             $shiphawk_rate_data = unserialize($order->getData('shiphawk_book_id')); //rate id
 
             $api = Mage::getModel('shiphawk_shipping/api');
+
             foreach($shiphawk_rate_data as $rate_id=>$products_ids) {
 
                     $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items']);

@@ -48,7 +48,7 @@ class Shiphawk_Shipping_Model_Observer extends Mage_Core_Model_Abstract
         $order->setShiphawkApiId($ship_hawk_id);
         $order->save();
 
-        Mage::log('order complete');
+
 
         Mage::getSingleton('core/session')->unsShiphawkId();*/
     }

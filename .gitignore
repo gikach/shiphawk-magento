@@ -1,5 +1,6 @@
 .idea/
 .modgit/
+app/code/local/Whidegroup/
 app/code/community/Phoenix/
 app/code/community/Cm/
 app/code/core/
@@ -12,6 +13,7 @@ app/design/frontend/default/iphone/
 app/design/frontend/default/modern/
 app/design/frontend/enterprise/default
 app/design/install/
+app/etc/modules/Whidegroup_Trackingtool.xml
 app/etc/modules/Enterprise_*
 app/etc/modules/Mage_All.xml
 app/etc/modules/Mage_Api.xml

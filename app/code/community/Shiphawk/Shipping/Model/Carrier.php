@@ -54,20 +54,24 @@ class Shiphawk_Shipping_Model_Carrier
                 }
             }
 
+            Mage::log($ship_responces, null, 'RateResponce.log');
+
             if(!$api_error) {
                 $services = $this->_getServices($ship_responces);
                 $name_service = '';
                 $summ_price = 0;
 
                 foreach ($services as $id_service=>$service) {
-                    $name_service .= $service['name'] . ', ';
-                    $summ_price += $service['price'];
+                    //$name_service .= $service['name'] . ', ';
+                    //$summ_price += $service['price'];
+                    $result->append($this->_getShiphawkRateObject($service['name'], $service['price']));
                 }
 
+                Mage::log($toOrder, null, 'toOrder.log');
                 //save rate_id info for Book
                 Mage::getSingleton('core/session')->setShiphawkBookId(serialize($toOrder));
                 //add ShipHawk shipping
-                $result->append($this->_getShiphawkRateObject($name_service, $summ_price));
+                //$result->append($this->_getShiphawkRateObject($name_service, $summ_price));
             }
 
         }catch (Mage_Core_Exception $e) {

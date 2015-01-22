@@ -35,6 +35,15 @@
                 </shiphawk_shipping_lock_attributes>
             </observers>
         </catalog_product_load_after>
+        <adminhtml_catalog_product_edit_prepare_form>
+            <observers>
+                <lock_group>
+                    <type>singleton</type>
+                    <class>shiphawk_all/observer</class>
+                    <method>lockGroup</method>
+                </lock_group>
+            </observers>
+        </adminhtml_catalog_product_edit_prepare_form>
     </events>
   </global>
 </config> 

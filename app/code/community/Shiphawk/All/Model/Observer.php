@@ -3,7 +3,6 @@ class Shiphawk_All_Model_Observer extends Mage_Core_Model_Abstract
 {
     public function setDefaultGroup($observer){
 
-
             if(Mage::helper('core')->isModuleEnabled('Shiphawk_Shipping')) {
                 Mage::log('Enabled');
             }else{
@@ -11,8 +10,8 @@ class Shiphawk_All_Model_Observer extends Mage_Core_Model_Abstract
                 $attributeSetCollection = Mage::getResourceModel('eav/entity_attribute_group_collection')
                     ->addFieldToFilter('attribute_group_name', 'ShipHawk Attributes')
                     ->load();
-                $select = $attributeSetCollection->getSelect()->__toString();
-                Mage::log($select);
+                //$select = $attributeSetCollection->getSelect()->__toString();
+                //Mage::log($select);
                 foreach ($attributeSetCollection as $id=>$attributeGroup) {
 
                     Mage::log('set-id: ' . $attributeGroup->getAttributeSetId(), null, 'AttributeGroup.log');
@@ -48,6 +47,18 @@ class Shiphawk_All_Model_Observer extends Mage_Core_Model_Abstract
             */
 
 
+    }
+
+    public function lockGroup($observer) {
+        if(Mage::helper('core')->isModuleEnabled('Shiphawk_Shipping')) {
+            Mage::log('Enabled');
+        }else{
+            Mage::log('NOT Enabled');
+            $event = $observer->getEvent();
+            $form = $event->getForm();
+            Mage::log($observer->getData(), null, 'Formdata.log');
+
+        }
     }
 
     public function lockAttributes() {
