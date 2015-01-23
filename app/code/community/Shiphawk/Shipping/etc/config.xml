@@ -108,6 +108,15 @@
             </Shiphawk_Shipping>
         </routers>
     </frontend>
+    <adminhtml>
+        <layout>
+            <updates>
+                <shiphawk_shipping>
+                    <file>shiphawk.xml</file>
+                </shiphawk_shipping>
+            </updates>
+        </layout>
+    </adminhtml>
     <!--<admin>
         <routers>
             <adminhtml>

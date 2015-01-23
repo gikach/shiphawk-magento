@@ -1,14 +1,14 @@
 <?php
 class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 {
-    public function getShiphawkRate($from_zip, $to_zip, $items) {
+    public function getShiphawkRate($from_zip, $to_zip, $items, $rate_filter) {
 
         $helper = Mage::helper('shiphawk_shipping');
         $api_key = $helper->getApiKey();
         $url_api_rates = $helper->getApiUrl() . 'rates/full?api_key=' . $api_key;
 
         $from_type  = Mage::getStoreConfig('carriers/shiphawk_shipping/origin_location_type');
-        $rate_filter = $helper->getRateFilter();
+        //$rate_filter = $helper->getRateFilter();
         $curl = curl_init();
 
 

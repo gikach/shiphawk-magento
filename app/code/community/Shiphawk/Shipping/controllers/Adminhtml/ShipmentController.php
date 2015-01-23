@@ -90,9 +90,14 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
 
             $api = Mage::getModel('shiphawk_shipping/api');
 
+            $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter();
+            /*if(count($grouped_items_by_zip) > 1) {
+                $rate_filter = 'best';
+            }*/
+
             foreach($shiphawk_rate_data as $rate_id=>$products_ids) {
 
-                    $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items']);
+                    $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter);
 
                     // get only one method for each group of product
                     $rate_id = $responceObject[0]->id;

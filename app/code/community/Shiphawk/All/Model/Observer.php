@@ -54,9 +54,7 @@ class Shiphawk_All_Model_Observer extends Mage_Core_Model_Abstract
             Mage::log('Enabled');
         }else{
             Mage::log('NOT Enabled');
-            $event = $observer->getEvent();
-            $form = $event->getForm();
-            Mage::log($observer->getData(), null, 'Formdata.log');
+
 
         }
     }

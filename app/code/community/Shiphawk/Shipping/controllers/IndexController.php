@@ -54,6 +54,7 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
     public function searchAction() {
 
         $search_tag = trim(strip_tags($this->getRequest()->getPost('search_tag')));
+
         $api_key = Mage::helper('shiphawk_shipping')->getApiKey();
         $api_url = Mage::helper('shiphawk_shipping')->getApiUrl();
 
@@ -78,7 +79,7 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
             $responce_html="<ul>";
 
             foreach($responce_array as $key=>$value) {
-                $responce_html .='<li class="type_link" id='.$key.' onclick="setIdValue(this)" >'.$value.'</li>';
+                $responce_html .='<li class="type_link" id='.$key.' onclick="setItemid(this)" >'.$value.'</li>';
             }
 
             $responce_html .="</ul>";

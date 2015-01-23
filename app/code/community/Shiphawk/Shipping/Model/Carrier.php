@@ -31,13 +31,19 @@ class Shiphawk_Shipping_Model_Carrier
 
         $grouped_items_by_zip = $this->_getGroupedItemsByZip($items);
 
+        Mage::log(count($grouped_items_by_zip), null, 'GroupedItems.log');
+        Mage::log($grouped_items_by_zip, null, 'GroupedItems.log');
+
         $ship_responces = array();
         $toOrder= array();
         $api_error = false;
-
+        $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter();
+        if(count($grouped_items_by_zip) > 1) {
+            $rate_filter = 'best';
+        }
         try {
             foreach($grouped_items_by_zip as $from_zip=>$items_) {
-                $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_);
+                $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter);
                 $ship_responces[] = $responceObject;
 
                 // get only one method for each group of product
