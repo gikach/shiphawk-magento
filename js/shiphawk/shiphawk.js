@@ -44,11 +44,10 @@ document.observe("dom:loaded", function() {
             });
         }
     }
-
+});
     function setItemid(el) {
         $('shiphawk_type_of_product').value = el.innerHTML;
         $('shiphawk_type_of_product_value').value = el.id;
         $('type_product').hide();
     }
 
-});
