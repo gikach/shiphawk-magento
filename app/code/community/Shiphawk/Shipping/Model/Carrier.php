@@ -31,14 +31,12 @@ class Shiphawk_Shipping_Model_Carrier
 
         $grouped_items_by_zip = $this->_getGroupedItemsByZip($items);
 
-        Mage::log(count($grouped_items_by_zip), null, 'GroupedItems.log');
-        Mage::log($grouped_items_by_zip, null, 'GroupedItems.log');
-
         $ship_responces = array();
         $toOrder= array();
         $api_error = false;
+        $is_multi_zip = (count($grouped_items_by_zip) > 1) ? 1 : 0;
         $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter();
-        if(count($grouped_items_by_zip) > 1) {
+        if($is_multi_zip) {
             $rate_filter = 'best';
         }
         try {
@@ -70,14 +68,22 @@ class Shiphawk_Shipping_Model_Carrier
                 foreach ($services as $id_service=>$service) {
                     //$name_service .= $service['name'] . ', ';
                     //$summ_price += $service['price'];
-                    $result->append($this->_getShiphawkRateObject($service['name'], $service['price']));
+                    if (!$is_multi_zip) {
+                        $result->append($this->_getShiphawkRateObject($service['name'], $service['price']));
+                    }else{
+                        $name_service .= $service['name'] . ', ';
+                        $summ_price += $service['price'];
+                    }
                 }
 
-                Mage::log($toOrder, null, 'toOrder.log');
+
                 //save rate_id info for Book
                 Mage::getSingleton('core/session')->setShiphawkBookId(serialize($toOrder));
-                //add ShipHawk shipping
-                //$result->append($this->_getShiphawkRateObject($name_service, $summ_price));
+                if($is_multi_zip) {
+                    //add ShipHawk shipping
+                    $result->append($this->_getShiphawkRateObject($name_service, $summ_price));
+                }
+
             }
 
         }catch (Mage_Core_Exception $e) {
