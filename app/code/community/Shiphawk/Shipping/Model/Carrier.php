@@ -92,6 +92,10 @@ class Shiphawk_Shipping_Model_Carrier
                 Mage::log($toOrder, null, 'toOrder.log');
                 //save rate_id info for Book
                 Mage::getSingleton('core/session')->setShiphawkBookId(serialize($toOrder));
+
+                if ($name_service{strlen($name_service)-2} == ',') {
+                    $name_service = substr($name_service,0,-2);
+                }
                 if($is_multi_zip) {
                     //add ShipHawk shipping
                     $result->append($this->_getShiphawkRateObject($name_service, $summ_price));
