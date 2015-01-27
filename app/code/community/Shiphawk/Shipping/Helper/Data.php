@@ -53,5 +53,10 @@ class Shiphawk_Shipping_Helper_Data extends
         return $shiphawk_attributes;
     }
 
+    public function isShipHawkShipping($shipping_code) {
+        $result = strpos($shipping_code, 'shiphawk_shipping');
+        return $result;
+    }
+
 
 }

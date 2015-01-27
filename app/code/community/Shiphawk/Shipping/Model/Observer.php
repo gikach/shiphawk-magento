@@ -26,17 +26,17 @@ class Shiphawk_Shipping_Model_Observer extends Mage_Core_Model_Abstract
         $manual_shipping =  Mage::getStoreConfig('carriers/shiphawk_shipping/book_shipment');
         $shipping_code = $order->getShippingMethod();
 
-        if($shipping_code == 'shiphawk_shipping_ground') {
+        $check_shiphawk = Mage::helper('shiphawk_shipping')->isShipHawkShipping($shipping_code);
+        if($check_shiphawk !== false) {
+            /* set ShipHawk rate */
+            $shiphawk_book_id = Mage::getSingleton('core/session')->getShiphawkBookId();
+            $order->setShiphawkBookId($shiphawk_book_id);
+            $order->save();
             if(!$manual_shipping) {
-                /* set ShipHawk rate */
-                $shiphawk_book_id = Mage::getSingleton('core/session')->getShiphawkBookId();
-                $order->setShiphawkBookId($shiphawk_book_id);
-                $order->save();
                 if ($order->canShip()) {
                     $api = Mage::getModel('shiphawk_shipping/api');
                     $api->saveshipment($orderId);
                 }
-
             }
         }
 

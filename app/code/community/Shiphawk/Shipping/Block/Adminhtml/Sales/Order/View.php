@@ -11,8 +11,8 @@ class Shiphawk_Shipping_Block_Adminhtml_Sales_Order_View extends Mage_Adminhtml_
         $shipping_code = $order->getShippingMethod();
 
         $confirm_messsage = $this->__('Are you sure to process?');
-
-        if($shipping_code == 'shiphawk_shipping_ground')
+        $check_shiphawk = Mage::helper('shiphawk_shipping')->isShipHawkShipping($shipping_code);
+        if($check_shiphawk !== false)
             if ($order->canShip()) {
                 if($manual_shipping) {
                     $this->_addButton('shiphawk_shipping', array(

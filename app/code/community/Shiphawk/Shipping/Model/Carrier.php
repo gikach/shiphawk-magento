@@ -29,12 +29,12 @@ class Shiphawk_Shipping_Model_Carrier
         $api = Mage::getModel('shiphawk_shipping/api');
         $items = $this->getShiphawkItems($request);
 
-        $grouped_items_by_zip = $this->_getGroupedItemsByZip($items);
+        $grouped_items_by_zip = $this->getGroupedItemsByZip($items);
 
         $ship_responces = array();
         $toOrder= array();
         $api_error = false;
-        $is_multi_zip = (count($grouped_items_by_zip) > 1) ? 1 : 0;
+        $is_multi_zip = (count($grouped_items_by_zip) > 1) ? true : false;
         $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter();
         if($is_multi_zip) {
             $rate_filter = 'best';
@@ -46,12 +46,24 @@ class Shiphawk_Shipping_Model_Carrier
 
                 // get only one method for each group of product
                 if((!$responceObject->error)) {
-                    $toOrder[$responceObject[0]->id]['product_ids'] = $this->_getProductIds($items_);
-                    $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->price;
-                    $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->service;
-                    $toOrder[$responceObject[0]->id]['items'] = $items_;
-                    $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
-                    $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
+                    if(($is_multi_zip)||($rate_filter == 'best')) {
+                        $toOrder[$responceObject[0]->id]['product_ids'] = $this->_getProductIds($items_);
+                        $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->price;
+                        $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->service;
+                        $toOrder[$responceObject[0]->id]['items'] = $items_;
+                        $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
+                        $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
+                    }else{
+                            foreach ($responceObject as $responce) {
+                                Mage::log($responce , null, 'RESPONCE.log');
+                                $toOrder[$responce->id]['product_ids'] = $this->_getProductIds($items_);
+                                $toOrder[$responce->id]['price'] = $responce->price;
+                                $toOrder[$responce->id]['name'] = $responce->service;
+                                $toOrder[$responce->id]['items'] = $items_;
+                                $toOrder[$responce->id]['from_zip'] = $from_zip;
+                                $toOrder[$responce->id]['to_zip'] = $to_zip;
+                            }
+                    }
                 }else{
                     $api_error = true;
                     Mage::log('ShipHawk rate error', null, 'ShipHawk.log');
@@ -76,7 +88,8 @@ class Shiphawk_Shipping_Model_Carrier
                     }
                 }
 
-
+                Mage::log($services, null, 'services.log');
+                Mage::log($toOrder, null, 'toOrder.log');
                 //save rate_id info for Book
                 Mage::getSingleton('core/session')->setShiphawkBookId(serialize($toOrder));
                 if($is_multi_zip) {
@@ -126,10 +139,11 @@ class Shiphawk_Shipping_Model_Carrier
 
         $rate->setCarrier($this->_code);
         $rate->setCarrierTitle($this->getConfigData('title'));
-        $rate->setMethod('ground');
+        //$rate->setMethod('ground');
+        $rate->setMethod(str_replace(' ', '_', $method_title));
         $rate->setMethodTitle($method_title);
         $rate->setPrice($price);
-        $rate->setCost(0);
+        $rate->setCost($price);
 
         return $rate;
     }
@@ -197,7 +211,7 @@ class Shiphawk_Shipping_Model_Carrier
         return $product_is_packed;
     }
 
-    protected function _getGroupedItemsByZip($items) {
+    public function getGroupedItemsByZip($items) {
         $tmp = array();
         foreach($items as $item) {
             $tmp[$item['zip']][] = $item;
