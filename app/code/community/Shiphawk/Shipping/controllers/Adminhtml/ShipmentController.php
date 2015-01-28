@@ -94,6 +94,8 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
 
             $grouped_items_by_zip = Mage::getModel('shiphawk_shipping/carrier')->getGroupedItemsByZip($items);
 
+            $shipping_description = $order->getShippingDescription();
+
             $is_multi_zip = (count($grouped_items_by_zip) > 1) ? true : false;
             $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter();
             if($is_multi_zip) {
@@ -107,6 +109,16 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                         $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter);
                     // get only one method for each group of product
                         $rate_id = $responceObject[0]->id;
+                    }else{
+                        $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter);
+
+                        foreach ($responceObject as $responce) {
+                            if( strpos($shipping_description, $responce->service) !== false ) {
+                                $rate_id = $responce->id;
+                                break;
+                          }
+                        }
+
                     }
 
                     // add book

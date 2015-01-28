@@ -126,8 +126,6 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
         $resp = curl_exec($curl);
         $arr_res = json_decode($resp);
 
-        Mage::log($arr_res, null, 'BOOKresponce.log');
-
         curl_close($curl);
 
         return $arr_res;
@@ -180,7 +178,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
             }
 
         } catch (Mage_Core_Exception $e) {
-            $this->_getSession()->addError($e->getMessage());
+
             Mage::logException($e);
 
         } catch (Exception $e) {

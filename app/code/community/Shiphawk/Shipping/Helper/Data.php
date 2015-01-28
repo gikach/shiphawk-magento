@@ -58,5 +58,16 @@ class Shiphawk_Shipping_Helper_Data extends
         return $result;
     }
 
+    public function getSipHawkCode($shiphawk_book_id, $shipping_description) {
+        $result = array();
+        foreach ($shiphawk_book_id as $rate_id=>$method_data) {
+            if( strpos($shipping_description, $method_data['name']) !== false ) {
+                $result = array($rate_id => $method_data);
+                return $result;
+            }
+        }
+        return null;
+    }
+
 
 }

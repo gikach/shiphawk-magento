@@ -44,9 +44,11 @@ class Shiphawk_Shipping_Model_Carrier
                 $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter);
                 $ship_responces[] = $responceObject;
 
-                // get only one method for each group of product
+
                 if((!$responceObject->error)) {
+                    // if $rate_filter = 'best' then it is only one rate
                     if(($is_multi_zip)||($rate_filter == 'best')) {
+                        Mage::getSingleton('core/session')->setMultiZipCode(true);
                         $toOrder[$responceObject[0]->id]['product_ids'] = $this->_getProductIds($items_);
                         $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->price;
                         $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->service;
@@ -54,8 +56,8 @@ class Shiphawk_Shipping_Model_Carrier
                         $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
                         $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
                     }else{
+                        Mage::getSingleton('core/session')->setMultiZipCode(false);
                             foreach ($responceObject as $responce) {
-                                Mage::log($responce , null, 'RESPONCE.log');
                                 $toOrder[$responce->id]['product_ids'] = $this->_getProductIds($items_);
                                 $toOrder[$responce->id]['price'] = $responce->price;
                                 $toOrder[$responce->id]['name'] = $responce->service;
@@ -70,17 +72,14 @@ class Shiphawk_Shipping_Model_Carrier
                 }
             }
 
-            Mage::log($ship_responces, null, 'RateResponce.log');
-
             if(!$api_error) {
                 $services = $this->_getServices($ship_responces);
                 $name_service = '';
                 $summ_price = 0;
 
                 foreach ($services as $id_service=>$service) {
-                    //$name_service .= $service['name'] . ', ';
-                    //$summ_price += $service['price'];
                     if (!$is_multi_zip) {
+                        //add ShipHawk shipping
                         $result->append($this->_getShiphawkRateObject($service['name'], $service['price']));
                     }else{
                         $name_service .= $service['name'] . ', ';
@@ -88,11 +87,10 @@ class Shiphawk_Shipping_Model_Carrier
                     }
                 }
 
-                Mage::log($services, null, 'services.log');
-                Mage::log($toOrder, null, 'toOrder.log');
                 //save rate_id info for Book
-                Mage::getSingleton('core/session')->setShiphawkBookId(serialize($toOrder));
+                Mage::getSingleton('core/session')->setShiphawkBookId($toOrder);
 
+                //remove last comma
                 if ($name_service{strlen($name_service)-2} == ',') {
                     $name_service = substr($name_service,0,-2);
                 }
@@ -100,7 +98,6 @@ class Shiphawk_Shipping_Model_Carrier
                     //add ShipHawk shipping
                     $result->append($this->_getShiphawkRateObject($name_service, $summ_price));
                 }
-
             }
 
         }catch (Mage_Core_Exception $e) {

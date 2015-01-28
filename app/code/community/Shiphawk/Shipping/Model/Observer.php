@@ -23,14 +23,23 @@ class Shiphawk_Shipping_Model_Observer extends Mage_Core_Model_Abstract
         $order = $event->getOrder();
         $orderId = $order->getId();
 
+        $helper = Mage::helper('shiphawk_shipping');
+
         $manual_shipping =  Mage::getStoreConfig('carriers/shiphawk_shipping/book_shipment');
         $shipping_code = $order->getShippingMethod();
-
+        $shipping_description = $order->getShippingDescription();
         $check_shiphawk = Mage::helper('shiphawk_shipping')->isShipHawkShipping($shipping_code);
         if($check_shiphawk !== false) {
             /* set ShipHawk rate */
             $shiphawk_book_id = Mage::getSingleton('core/session')->getShiphawkBookId();
-            $order->setShiphawkBookId($shiphawk_book_id);
+
+            $multi_zip_code = Mage::getSingleton('core/session')->getMultiZipCode();
+
+            if($multi_zip_code == false) {
+                $shiphawk_book_id  = $helper->getSipHawkCode($shiphawk_book_id, $shipping_description);
+            }
+
+            $order->setShiphawkBookId(serialize($shiphawk_book_id));
             $order->save();
             if(!$manual_shipping) {
                 if ($order->canShip()) {
@@ -41,6 +50,7 @@ class Shiphawk_Shipping_Model_Observer extends Mage_Core_Model_Abstract
         }
 
         Mage::getSingleton('core/session')->unsShiphawkBookId();
+        Mage::getSingleton('core/session')->unsMultiZipCode();
 
     }
 
