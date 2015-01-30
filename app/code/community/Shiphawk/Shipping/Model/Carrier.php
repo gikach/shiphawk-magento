@@ -197,7 +197,12 @@ class Shiphawk_Shipping_Model_Carrier
     }
 
     public function getShipHawkItemValue($product) {
-        $item_value = ($product->getShiphawkItemValue()) ? $product->getShiphawkItemValue() : $product->getPrice();
+        if($product->getShiphawkQuantity() > 0) {
+            $product_price = $product->getPrice()/$product->getShiphawkQuantity();
+        }else{
+            $product_price = $product->getPrice();
+        }
+        $item_value = ($product->getShiphawkItemValue() > 0) ? $product->getShiphawkItemValue() : $product_price;
         return $item_value;
     }
 
