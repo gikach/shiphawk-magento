@@ -70,9 +70,15 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
         $resp = curl_exec($curl);
         $arr_res = json_decode($resp);
         $responce_array = array();
+        $responce = array();
 
-        if (!empty($arr_res) && (empty($arr_res['error']))) {
-            foreach ($arr_res as $el) {
+        if(($arr_res->error) || ($arr_res['error'])) {
+
+            Mage::log($arr_res->error, null, 'ShipHawk.log');
+            $responce_html = '';
+            $responce['shiphawk_error'] = $arr_res->error;
+        }else{
+            foreach ((array) $arr_res as $el) {
                 $responce_array[$el->id] = $el->name.' ('.$el->category.')';
             }
 
@@ -83,13 +89,10 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
             }
 
             $responce_html .="</ul>";
-
-        }else{
-            $responce_html = '';
         }
-
+        $responce['responce_html'] = $responce_html;
         curl_close($curl);
 
-        $this->getResponse()->setBody($responce_html);
+        $this->getResponse()->setBody( json_encode($responce) );
     }
 }

@@ -33,10 +33,18 @@ document.observe("dom:loaded", function() {
                 method: 'post',
                 parameters: parameters,
                 onSuccess: function(transport)  {
-                    console.log(element.value);
 
-                    $('type_product').update(transport.responseText);
-                    $('type_product').show();
+                    responce_html  = JSON.parse(transport.responseText);
+
+                    if(responce_html.shiphawk_error) {
+                        alert(responce_html.shiphawk_error);
+                    }else{
+                        if(responce_html.responce_html) {
+                            $('type_product').update(responce_html.responce_html);
+                            $('type_product').show();
+                        }
+                    }
+
                 },
                 onLoading:function(transport)
                 {
