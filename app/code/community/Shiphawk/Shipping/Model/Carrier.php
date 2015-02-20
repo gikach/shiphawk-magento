@@ -44,19 +44,19 @@ class Shiphawk_Shipping_Model_Carrier
                 $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter);
                 $ship_responces[] = $responceObject;
 
-
-                if((!$responceObject->error)) {
-                    // if $rate_filter = 'best' then it is only one rate
-                    if(($is_multi_zip)||($rate_filter == 'best')) {
-                        Mage::getSingleton('core/session')->setMultiZipCode(true);
-                        $toOrder[$responceObject[0]->id]['product_ids'] = $this->_getProductIds($items_);
-                        $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->price;
-                        $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->service;
-                        $toOrder[$responceObject[0]->id]['items'] = $items_;
-                        $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
-                        $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
-                    }else{
-                        Mage::getSingleton('core/session')->setMultiZipCode(false);
+                if(is_object($responceObject)) {
+                    if((!$responceObject->error)) {
+                        // if $rate_filter = 'best' then it is only one rate
+                        if(($is_multi_zip)||($rate_filter == 'best')) {
+                            Mage::getSingleton('core/session')->setMultiZipCode(true);
+                            $toOrder[$responceObject[0]->id]['product_ids'] = $this->_getProductIds($items_);
+                            $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->price;
+                            $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->service;
+                            $toOrder[$responceObject[0]->id]['items'] = $items_;
+                            $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
+                            $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
+                        }else{
+                            Mage::getSingleton('core/session')->setMultiZipCode(false);
                             foreach ($responceObject as $responce) {
                                 $toOrder[$responce->id]['product_ids'] = $this->_getProductIds($items_);
                                 $toOrder[$responce->id]['price'] = $responce->price;
@@ -65,6 +65,10 @@ class Shiphawk_Shipping_Model_Carrier
                                 $toOrder[$responce->id]['from_zip'] = $from_zip;
                                 $toOrder[$responce->id]['to_zip'] = $to_zip;
                             }
+                        }
+                    }else{
+                        $api_error = true;
+                        Mage::log('ShipHawk rate error', null, 'ShipHawk.log');
                     }
                 }else{
                     $api_error = true;
@@ -91,9 +95,12 @@ class Shiphawk_Shipping_Model_Carrier
                 Mage::getSingleton('core/session')->setShiphawkBookId($toOrder);
 
                 //remove last comma
-                if ($name_service{strlen($name_service)-2} == ',') {
-                    $name_service = substr($name_service,0,-2);
+                if(strlen($name_service) >2) {
+                    if ($name_service{strlen($name_service)-2} == ',') {
+                        $name_service = substr($name_service,0,-2);
+                    }
                 }
+
                 if($is_multi_zip) {
                     //add ShipHawk shipping
                     $result->append($this->_getShiphawkRateObject($name_service, $summ_price));
