@@ -68,11 +68,11 @@ class Shiphawk_Shipping_Model_Carrier
                         }
                     }else{
                         $api_error = true;
-                        Mage::log('ShipHawk rate error', null, 'ShipHawk.log');
+                        Mage::log('ShipHawk responce: '.$responceObject->error, null, 'ShipHawk.log');
                     }
                 }else{
                     $api_error = true;
-                    Mage::log('ShipHawk rate error', null, 'ShipHawk.log');
+                    Mage::log('ShipHawk rate error: '.$responceObject->error, null, 'ShipHawk.log');
                 }
             }
 
@@ -195,9 +195,14 @@ class Shiphawk_Shipping_Model_Carrier
     }
 
     public function getShippingZip() {
-        /** @var $cart Mage_Checkout_Model_Cart */
-        $cart = Mage::getSingleton('checkout/cart');
-        $quote = $cart->getQuote();
+        if (Mage::app()->getStore()->isAdmin()) {
+            $quote = Mage::getSingleton('adminhtml/session_quote')->getQuote();
+        }else{
+            /** @var $cart Mage_Checkout_Model_Cart */
+            $cart = Mage::getSingleton('checkout/cart');
+            $quote = $cart->getQuote();
+        }
+
         $shippingAddress = $quote->getShippingAddress();
         $zip_code = $shippingAddress->getPostcode();
         return $zip_code;
