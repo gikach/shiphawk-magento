@@ -44,7 +44,7 @@ class Shiphawk_Shipping_Model_Carrier
                 $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter);
                 $ship_responces[] = $responceObject;
 
-                if(is_object($responceObject)) {
+//TODO Notice : Trying to get property of non-object  ( if !is_array,
                     if((!$responceObject->error)) {
                         // if $rate_filter = 'best' then it is only one rate
                         if(($is_multi_zip)||($rate_filter == 'best')) {
@@ -70,10 +70,7 @@ class Shiphawk_Shipping_Model_Carrier
                         $api_error = true;
                         Mage::log('ShipHawk responce: '.$responceObject->error, null, 'ShipHawk.log');
                     }
-                }else{
-                    $api_error = true;
-                    Mage::log('ShipHawk rate error: '.$responceObject->error, null, 'ShipHawk.log');
-                }
+
             }
 
             if(!$api_error) {
@@ -146,10 +143,10 @@ class Shiphawk_Shipping_Model_Carrier
         $rate = Mage::getModel('shipping/rate_result_method');
 
         $rate->setCarrier($this->_code);
-        $rate->setCarrierTitle($this->getConfigData('title'));
-        //$rate->setMethod('ground');
-        $rate->setMethod(str_replace(' ', '_', $method_title));
+        //$rate->setCarrierTitle($this->getConfigData('title'));
+        $rate->setCarrierTitle('ShipHawk');
         $rate->setMethodTitle($method_title);
+        $rate->setMethod(str_replace(',', '', str_replace(' ', '_', $method_title)));
         $rate->setPrice($price);
         $rate->setCost($price);
 

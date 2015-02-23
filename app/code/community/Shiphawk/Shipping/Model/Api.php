@@ -60,7 +60,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
         /* */
 
         $curl = curl_init();
-//$_GET['Parameter'] ? $_GET['Parameter'] : 'DefaultValue';
+
         $origin_address = $this->_getOriginData();
 
         $next_bussines_day = date('Y-m-d', strtotime('now +1 Weekday'));

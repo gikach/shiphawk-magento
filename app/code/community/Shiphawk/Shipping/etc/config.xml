@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Shiphawk_Shipping>
-            <version>0.7.2</version>
+            <version>1.0.0</version>
         </Shiphawk_Shipping>
     </modules>
     <global>
@@ -47,24 +47,6 @@
                     </shiphawk_shipping_config_save>
                 </observers>
             </admin_system_config_changed_section_carriers>
-           <!-- <catalog_product_load_after>
-                <observers>
-                    <shiphawk_shipping_lock_attributes>
-                        <type>singleton</type>
-                        <class>shiphawk_shipping/observer</class>
-                        <method>lockAttributes</method>
-                    </shiphawk_shipping_lock_attributes>
-                </observers>
-            </catalog_product_load_after>-->
-            <!--<checkout_onepage_controller_success_action>
-                <observers>
-                    <shiphawk_shipping>
-                        <type>singleton</type>
-                        <class>shiphawk_shipping/observer</class>
-                        <method>saveShipHawkId</method>
-                    </shiphawk_shipping>
-                </observers>
-            </checkout_onepage_controller_success_action>-->
             <sales_order_place_after>
                 <observers>
                     <shiphawk_shipping_order_place>
@@ -74,15 +56,6 @@
                     </shiphawk_shipping_order_place>
                 </observers>
             </sales_order_place_after>
-           <!-- <admin_session_user_login_success>
-                <observers>
-                    <set_group>
-                        <type>singleton</type>
-                        <class>shiphawk_shipping/observer</class>
-                        <method>setDefaultGroup</method>
-                    </set_group>
-                </observers>
-            </admin_session_user_login_success>-->
         </events>
         <fieldsets>
             <sales_convert_quote>
@@ -147,7 +120,6 @@
                 <shipment_status_updates>0</shipment_status_updates>
                 <sort_order>10</sort_order>
                 <model>shiphawk_shipping/carrier</model>
-                <title>ShipHawk</title>
                 <item_is_packed>1</item_is_packed>
                 <sort_order>10</sort_order>
                 <sallowspecific>1</sallowspecific>

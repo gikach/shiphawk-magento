@@ -72,14 +72,6 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                         </item_is_packed>
-                        <title translate="label">
-                            <label>Rate display name</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>60</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </title>
                         <book_shipment translate="label">
                             <label>Manual book shipment</label>
                             <frontend_type>select</frontend_type>
@@ -161,10 +153,18 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                         </origin_address>
+                        <origin_address2 translate="label">
+                            <label>Origin Address 2</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>83</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </origin_address2>
                         <origin_city translate="label">
                             <label>Origin City</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>83</sort_order>
+                            <sort_order>84</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
