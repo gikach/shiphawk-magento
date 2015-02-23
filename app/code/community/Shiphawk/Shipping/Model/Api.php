@@ -73,6 +73,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
                     'first_name' => $origin_address_product['origin_first_name'] ? $origin_address_product['origin_first_name'] : $origin_address['origin_first_name'],
                     'last_name' => $origin_address_product['origin_last_name'] ? $origin_address_product['origin_last_name'] : $origin_address['origin_last_name'],
                     'address_line_1' => $origin_address_product['origin_address'] ? $origin_address_product['origin_address'] : $origin_address['origin_address'],
+                    'address_line_2' => $origin_address_product['origin_address2'] ? $origin_address_product['origin_address2'] : $origin_address['origin_address2'],
                     'phone_num' => $origin_address_product['origin_phone'] ? $origin_address_product['origin_phone'] : $origin_address['origin_phone'],
                     'city' => $origin_address_product['origin_city'] ? $origin_address_product['origin_city'] : $origin_address['origin_city'],
                     'state' => $origin_address_product['origin_state'] ? $origin_address_product['origin_state'] : $origin_address['origin_state'],
@@ -141,6 +142,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
         $origin_address['origin_first_name'] = Mage::getStoreConfig('carriers/shiphawk_shipping/origin_first_name');
         $origin_address['origin_last_name'] = Mage::getStoreConfig('carriers/shiphawk_shipping/origin_last_name');
         $origin_address['origin_address'] = Mage::getStoreConfig('carriers/shiphawk_shipping/origin_address');
+        $origin_address['origin_address2'] = Mage::getStoreConfig('carriers/shiphawk_shipping/origin_address2');
         $origin_address['origin_state'] = Mage::getStoreConfig('carriers/shiphawk_shipping/origin_state');
         $origin_address['origin_city'] = Mage::getStoreConfig('carriers/shiphawk_shipping/origin_city');
         $origin_address['default_origin_zip'] = Mage::getStoreConfig('carriers/shiphawk_shipping/default_origin');
@@ -160,6 +162,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
             $origin_address_product['origin_first_name'] = $origin_product->getData('shiphawk_origin_firstname');
             $origin_address_product['origin_last_name'] = $origin_product->getData('shiphawk_origin_lastname');
             $origin_address_product['origin_address'] = $origin_product->getData('shiphawk_origin_addressline1');
+            $origin_address_product['origin_address2'] = $origin_product->getData('shiphawk_origin_addressline2');
             $origin_address_product['origin_state'] = $origin_product->getData('shiphawk_origin_state');
             $origin_address_product['origin_city'] = $origin_product->getData('shiphawk_origin_city');
             $origin_address_product['default_origin_zip'] = $origin_product->getData('shiphawk_origin_zipcode');
