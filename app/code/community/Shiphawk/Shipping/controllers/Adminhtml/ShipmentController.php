@@ -1,78 +1,6 @@
 <?php
 class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Controller_Action
 {
-    public function subscribeAction() {
-        $shipment_id = $this->getRequest()->getParam('shipment_id');
-
-        $helper = Mage::helper('shiphawk_shipping');
-        $api_key = $helper->getApiKey();
-
-
-        if($shipment_id) {
-            try{
-                $shipment = Mage::getModel('sales/order_shipment')->load($shipment_id);
-
-                $shipment_id_track = $this->_getTrackNumber($shipment);
-
-                $subscribe_url = $helper->getApiUrl() . 'shipments/' . $shipment_id_track . '/subscribe?api_key=' . $api_key;
-                $callback_url = $helper->getCallbackUrl($api_key);
-
-                $items_array = array(
-                    'callback_url'=> $callback_url
-                );
-
-                $curl = curl_init();
-                $items_array =  json_encode($items_array);
-
-                curl_setopt($curl, CURLOPT_URL, $subscribe_url);
-                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $items_array);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-                        'Content-Type: application/json',
-                        'Content-Length: ' . strlen($items_array)
-                    )
-                );
-
-                $resp = curl_exec($curl);
-                $arr_res = json_decode($resp);
-
-                if (!empty($arr_res)) {
-                    $shipment->addComment($resp);
-                }
-
-                $shipment->save();
-
-                curl_close($curl);
-
-            }catch (Mage_Core_Exception $e) {
-                $this->_getSession()->addError($e->getMessage());
-
-            } catch (Exception $e) {
-                Mage::logException($e);
-                $this->_getSession()->addError($this->__('Cannot load shipment.'));
-            }
-
-        }else{
-            $this->_getSession()->addWarning($this->__('No ShipHawk tracking number'));
-        }
-
-        //$this->_getSession()->addSuccess($this->__('Subscribe'));
-        $this->_redirect('adminhtml/sales_shipment/view', array('shipment_id' => $shipment_id));
-    }
-
-    protected function _getTrackNumber($shipment) {
-
-        foreach($shipment->getAllTracks() as $tracknum)
-        {
-            //ShipHawk track number only one
-            if($tracknum->getCarrierCode() == 'shiphawk_shipping') {
-                return $tracknum->getNumber();
-            }
-        }
-        return null;
-    }
-
     /**
      * Save shipment
      * We can save only new shipment. Existing shipments are not editable
@@ -133,6 +61,8 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                         // add track
                         if($track_number = $track_data->shipment_id) {
                             $api->addTrackNumber($shipment, $track_number);
+
+                            $api->subscribeToTrackingInfo($shipment->getId());
                         }
 
                         $shipmentCreatedMessage = $this->__('The shipment has been created.');

@@ -204,6 +204,8 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
                 // add track
                 if($track_number = $track_data->shipment_id) {
                     $this->addTrackNumber($shipment, $track_number);
+                    // subscribe automaticaly after book
+                    $this->subscribeToTrackingInfo($shipment->getId());
                 }
             }
 
@@ -306,5 +308,76 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
         }
 
     }
+
+    public function subscribeToTrackingInfo($shipment_id) {
+
+        $helper = Mage::helper('shiphawk_shipping');
+        $api_key = $helper->getApiKey();
+
+        if($shipment_id) {
+            try{
+                $shipment = Mage::getModel('sales/order_shipment')->load($shipment_id);
+
+                $shipment_id_track = $this->_getTrackNumber($shipment);
+
+                $subscribe_url = $helper->getApiUrl() . 'shipments/' . $shipment_id_track . '/subscribe?api_key=' . $api_key;
+                $callback_url = $helper->getCallbackUrl($api_key);
+
+                $items_array = array(
+                    'callback_url'=> $callback_url
+                );
+
+                $curl = curl_init();
+                $items_array =  json_encode($items_array);
+
+                curl_setopt($curl, CURLOPT_URL, $subscribe_url);
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $items_array);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                        'Content-Type: application/json',
+                        'Content-Length: ' . strlen($items_array)
+                    )
+                );
+
+                $resp = curl_exec($curl);
+                $arr_res = json_decode($resp);
+
+                if (!empty($arr_res)) {
+                    $shipment->addComment($resp);
+                }
+
+                $shipment->save();
+
+                curl_close($curl);
+
+            }catch (Mage_Core_Exception $e) {
+                $this->_getSession()->addError($e->getMessage());
+                Mage::logException($e);
+
+            } catch (Exception $e) {
+                Mage::logException($e);
+                //$this->_getSession()->addError($this->__('Cannot load shipment.'));
+            }
+
+        }else{
+            //$this->_getSession()->addWarning($this->__('No ShipHawk tracking number'));
+            Mage::logException($this->__('No ShipHawk tracking number'));
+        }
+
+    }
+
+    protected function _getTrackNumber($shipment) {
+
+        foreach($shipment->getAllTracks() as $tracknum)
+        {
+            //ShipHawk track number only one
+            if($tracknum->getCarrierCode() == 'shiphawk_shipping') {
+                return $tracknum->getNumber();
+            }
+        }
+        return null;
+    }
+
 
 }
