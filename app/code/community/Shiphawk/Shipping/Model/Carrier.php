@@ -25,6 +25,13 @@ class Shiphawk_Shipping_Model_Carrier
         $helper = Mage::helper('shiphawk_shipping');
         $default_origin_zip = Mage::getStoreConfig('carriers/shiphawk_shipping/default_origin');
 
+        $hide_on_frontend = Mage::getStoreConfig('carriers/shiphawk_shipping/hide_on_frontend');
+        $is_admin = $helper->checkIsAdmin();
+        // hide ShipHawk method on frontend , alow only in admin area
+        if (($hide_on_frontend == 1) && (!$is_admin)) {
+            return $result;
+        }
+
         $to_zip = $this->getShippingZip();
         $api = Mage::getModel('shiphawk_shipping/api');
         $items = $this->getShiphawkItems($request);
@@ -69,32 +76,6 @@ class Shiphawk_Shipping_Model_Carrier
                         }
                     }
                 }
-
-                   /* if((!$responceObject->error)) {
-                        // if $rate_filter = 'best' then it is only one rate
-                        if(($is_multi_zip)||($rate_filter == 'best')) {
-                            Mage::getSingleton('core/session')->setMultiZipCode(true);
-                            $toOrder[$responceObject[0]->id]['product_ids'] = $this->_getProductIds($items_);
-                            $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->price;
-                            $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->service;
-                            $toOrder[$responceObject[0]->id]['items'] = $items_;
-                            $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
-                            $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
-                        }else{
-                            Mage::getSingleton('core/session')->setMultiZipCode(false);
-                            foreach ($responceObject as $responce) {
-                                $toOrder[$responce->id]['product_ids'] = $this->_getProductIds($items_);
-                                $toOrder[$responce->id]['price'] = $responce->price;
-                                $toOrder[$responce->id]['name'] = $responce->service;
-                                $toOrder[$responce->id]['items'] = $items_;
-                                $toOrder[$responce->id]['from_zip'] = $from_zip;
-                                $toOrder[$responce->id]['to_zip'] = $to_zip;
-                            }
-                        }
-                    }else{
-                        $api_error = true;
-                        Mage::log('ShipHawk responce: '.$responceObject->error, null, 'ShipHawk.log');
-                    }*/
 
             }
 

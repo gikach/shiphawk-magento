@@ -116,6 +116,7 @@
         <carriers>
             <shiphawk_shipping>
                 <active>1</active>
+                <hide_on_frontend>0</hide_on_frontend>
                 <updates_tracking_url>0</updates_tracking_url>
                 <shipment_status_updates>0</shipment_status_updates>
                 <sort_order>10</sort_order>

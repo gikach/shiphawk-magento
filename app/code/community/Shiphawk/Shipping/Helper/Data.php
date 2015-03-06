@@ -69,5 +69,19 @@ class Shiphawk_Shipping_Helper_Data extends
         return null;
     }
 
+    public function checkIsAdmin () {
+        if(Mage::app()->getStore()->isAdmin())
+        {
+            return true;
+        }
+
+        if(Mage::getDesign()->getArea() == 'adminhtml')
+        {
+            return true;
+        }
+
+        return false;
+    }
+
 
 }
