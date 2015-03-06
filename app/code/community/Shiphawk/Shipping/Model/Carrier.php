@@ -59,8 +59,8 @@ class Shiphawk_Shipping_Model_Carrier
                     if(($is_multi_zip)||($rate_filter == 'best')) {
                         Mage::getSingleton('core/session')->setMultiZipCode(true);
                         $toOrder[$responceObject[0]->id]['product_ids'] = $this->_getProductIds($items_);
-                        $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->price;
-                        $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->service;
+                        $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->summary->price;
+                        $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->summary->service;
                         $toOrder[$responceObject[0]->id]['items'] = $items_;
                         $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
                         $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
@@ -68,8 +68,8 @@ class Shiphawk_Shipping_Model_Carrier
                         Mage::getSingleton('core/session')->setMultiZipCode(false);
                         foreach ($responceObject as $responce) {
                             $toOrder[$responce->id]['product_ids'] = $this->_getProductIds($items_);
-                            $toOrder[$responce->id]['price'] = $responce->price;
-                            $toOrder[$responce->id]['name'] = $responce->service;
+                            $toOrder[$responce->id]['price'] = $responce->summary->price;
+                            $toOrder[$responce->id]['name'] = $responce->summary->service;
                             $toOrder[$responce->id]['items'] = $items_;
                             $toOrder[$responce->id]['from_zip'] = $from_zip;
                             $toOrder[$responce->id]['to_zip'] = $to_zip;
@@ -250,8 +250,8 @@ class Shiphawk_Shipping_Model_Carrier
         foreach($ship_responces as $ship_responce) {
             if(is_array($ship_responce)) {
                 foreach($ship_responce as $object) {
-                    $services[$object->id]['name'] = $object->service;
-                    $services[$object->id]['price'] = $object->price;
+                    $services[$object->id]['name'] = $object->summary->service;
+                    $services[$object->id]['price'] = $object->summary->price;
                 }
             }
         }

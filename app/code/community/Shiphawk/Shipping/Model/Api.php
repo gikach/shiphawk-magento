@@ -5,7 +5,8 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 
         $helper = Mage::helper('shiphawk_shipping');
         $api_key = $helper->getApiKey();
-        $url_api_rates = $helper->getApiUrl() . 'rates/full?api_key=' . $api_key;
+        //$url_api_rates = $helper->getApiUrl() . 'rates/full?api_key=' . $api_key;
+        $url_api_rates = $helper->getApiUrl() . 'rates/standard?api_key=' . $api_key;
 
         $from_type  = Mage::getStoreConfig('carriers/shiphawk_shipping/origin_location_type');
         //$rate_filter = $helper->getRateFilter();

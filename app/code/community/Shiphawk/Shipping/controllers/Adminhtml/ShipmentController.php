@@ -42,7 +42,7 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                         $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter);
 
                         foreach ($responceObject as $responce) {
-                            if( strpos($shipping_description, $responce->service) !== false ) {
+                            if( strpos($shipping_description, $responce->summary->service) !== false ) {
                                 $rate_id = $responce->id;
                                 $is_rate = true;
                                 break;
