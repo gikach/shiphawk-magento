@@ -59,6 +59,8 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
         $api_url = Mage::helper('shiphawk_shipping')->getApiUrl();
 
         $url_api = $api_url . 'items/search/'.$search_tag.'?api_key='.$api_key;
+
+        Mage::log($url_api);
         $curl = curl_init();
 
         curl_setopt_array($curl, array(

@@ -44,7 +44,6 @@ class Shiphawk_Shipping_Model_Carrier
                 $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter);
                 $ship_responces[] = $responceObject;
 
-                //TODO Notice : Trying to get property of non-object  ( if !is_array,
                 if(is_object($responceObject)) {
                         $api_error = true;
                         Mage::log('ShipHawk responce: '.$responceObject->error, null, 'ShipHawk.log');
