@@ -250,7 +250,7 @@ class Shiphawk_Shipping_Model_Carrier
         foreach($ship_responces as $ship_responce) {
             if(is_array($ship_responce)) {
                 foreach($ship_responce as $object) {
-                    $services[$object->id]['name'] = $object->summary->service;
+                    $services[$object->id]['name'] = $this->_getServiceName($object);
                     $services[$object->id]['price'] = $object->summary->price;
                 }
             }
@@ -258,6 +258,41 @@ class Shiphawk_Shipping_Model_Carrier
 
         return $services;
     }
+
+    protected function _getServiceName($object) {
+        if ( $object->summary->carrier_type == "Small Parcel" ) {
+            return $object->summary->service;
+        }
+
+        if ( $object->summary->carrier_type == "Blanket Wrap" ) {
+            return "Standard White Glove Delivery (3-6 weeks)";
+        }
+
+        if ( ( ( $object->summary->carrier_type == "LTL" ) || ( $object->summary->carrier_type == "3PL" ) || ( $object->summary->carrier_type == "Intermodal" ) ) && ($object->details->price->delivery == 0) ) {
+            return "Curbside delivery (1-2 weeks)";
+        }
+
+        if ( ( ( $object->summary->carrier_type == "LTL" ) || ( $object->summary->carrier_type == "3PL" ) || ( $object->summary->carrier_type == "Intermodal" ) ) && ($object->details->price->delivery > 0) ) {
+            return "Expedited White Glove Delivery (2-3 weeks)";
+        }
+
+        return $object->summary->service;
+
+    }
+
+    /*
+    1. If carrier_type = "Small Parcel" display name should be what's included in field [Service] (example: Ground)
+
+    2. If carrier_type = "Blanket Wrap" display name should be:
+    "Standard White Glove Delivery (3-6 weeks)"
+
+    3. If carrier_type = "LTL","3PL","Intermodal" AND delivery field inside [details][price]=$0.00 display name should be:
+    "Curbside delivery (1-2 weeks)"
+
+    4. If carrier_type = "LTL","3PL" "Intermodal" AND delivery field inside [details][price] > $0.00 display name should be:
+    "Expedited White Glove Delivery (2-3 weeks)"
+
+    */
 
 
 }
