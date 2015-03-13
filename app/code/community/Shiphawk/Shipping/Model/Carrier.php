@@ -148,11 +148,13 @@ class Shiphawk_Shipping_Model_Carrier
         /** @var Mage_Shipping_Model_Rate_Result_Method $rate */
         $rate = Mage::getModel('shipping/rate_result_method');
 
+        $ship_rate_id = str_replace(',', '', str_replace(' ', '_', $method_title));
+
         $rate->setCarrier($this->_code);
         //$rate->setCarrierTitle($this->getConfigData('title'));
         $rate->setCarrierTitle('ShipHawk');
         $rate->setMethodTitle($method_title);
-        $rate->setMethod(str_replace(',', '', str_replace(' ', '_', $method_title)));
+        $rate->setMethod($ship_rate_id);
         $rate->setPrice($price);
         $rate->setCost($price);
 

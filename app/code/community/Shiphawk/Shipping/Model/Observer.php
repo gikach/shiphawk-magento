@@ -36,7 +36,10 @@ class Shiphawk_Shipping_Model_Observer extends Mage_Core_Model_Abstract
             $multi_zip_code = Mage::getSingleton('core/session')->getMultiZipCode();
 
             if($multi_zip_code == false) {
-                $shiphawk_book_id  = $helper->getSipHawkCode($shiphawk_book_id, $shipping_description);
+                //
+                $shipping_amaount = $order->getShippingAmount();
+                //$shiphawk_book_id  = $helper->getSipHawkCode($shiphawk_book_id, $shipping_description);
+                $shiphawk_book_id  = $helper->getSipHawkCode($shiphawk_book_id, $shipping_amaount);
             }
 
             $order->setShiphawkBookId(serialize($shiphawk_book_id));

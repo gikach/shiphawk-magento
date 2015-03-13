@@ -58,10 +58,11 @@ class Shiphawk_Shipping_Helper_Data extends
         return $result;
     }
 
-    public function getSipHawkCode($shiphawk_book_id, $shipping_description) {
-        $result = array();
+    public function getSipHawkCode($shiphawk_book_id, $shipping_amaount) {
+        $result = array(); // сравниваем цены доставки, так как название методов совпадает не всегда
         foreach ($shiphawk_book_id as $rate_id=>$method_data) {
-            if( strpos($shipping_description, $method_data['name']) !== false ) {
+            //if( strpos($shipping_description, $method_data['name']) !== false ) {
+            if( $shipping_amaount == $method_data['price'] ) {
                 $result = array($rate_id => $method_data);
                 return $result;
             }
