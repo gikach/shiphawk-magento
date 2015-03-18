@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Shiphawk_Shipping>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </Shiphawk_Shipping>
     </modules>
     <global>
