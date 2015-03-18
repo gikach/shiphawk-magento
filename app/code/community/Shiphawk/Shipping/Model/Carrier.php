@@ -175,7 +175,7 @@ class Shiphawk_Shipping_Model_Carrier
                     'weight' => $product->getWeight(),
                     'value' => $this->getShipHawkItemValue($product),
                     'quantity' => $product->getShiphawkQuantity()*$item->getQty(),
-                    'is_packed' => $this->getIsPacked($product),
+                    'packed' => $this->getIsPacked($product),
                     'id' => $product->getShiphawkTypeOfProductValue(),
                     'zip'=> $this->getOriginZip($product),
                     'product_id'=> $product_id
@@ -187,7 +187,7 @@ class Shiphawk_Shipping_Model_Carrier
                     'height' => $product->getShiphawkHeight(),
                     'value' => $this->getShipHawkItemValue($product),
                     'quantity' => $product->getShiphawkQuantity()*$item->getQty(),
-                    'is_packed' => $this->getIsPacked($product),
+                    'packed' => $this->getIsPacked($product),
                     'id' => $product->getShiphawkTypeOfProductValue(),
                     'zip'=> $this->getOriginZip($product),
                     'product_id'=> $product_id
@@ -236,7 +236,8 @@ class Shiphawk_Shipping_Model_Carrier
         $product_is_packed = $product->getShiphawkItemIsPacked();
         $product_is_packed = ($product_is_packed == 2) ? $default_is_packed : $product_is_packed;
 
-        return $product_is_packed;
+        return ($product_is_packed ? 'true' : 'false');
+	//return $product_is_packed;
     }
 
     public function getGroupedItemsByZip($items) {
