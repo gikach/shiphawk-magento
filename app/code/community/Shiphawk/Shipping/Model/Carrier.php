@@ -178,7 +178,8 @@ class Shiphawk_Shipping_Model_Carrier
                     'packed' => $this->getIsPacked($product),
                     'id' => $product->getShiphawkTypeOfProductValue(),
                     'zip'=> $this->getOriginZip($product),
-                    'product_id'=> $product_id
+                    'product_id'=> $product_id,
+                    'xid'=> $product_id,
                 );
             }else{
                 $items[] = array(
@@ -190,7 +191,8 @@ class Shiphawk_Shipping_Model_Carrier
                     'packed' => $this->getIsPacked($product),
                     'id' => $product->getShiphawkTypeOfProductValue(),
                     'zip'=> $this->getOriginZip($product),
-                    'product_id'=> $product_id
+                    'product_id'=> $product_id,
+                    'xid'=> $product_id,
                 );
             }
 
