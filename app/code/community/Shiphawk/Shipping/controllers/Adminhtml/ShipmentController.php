@@ -38,10 +38,10 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                     // get only one method for each group of product
                         $rate_id = $responceObject[0]->id;
                         $is_rate = true;
-                        Mage::log($responceObject, null, 'BOOKIDMULTI.log');
+
                     }else{
                         $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter);
-                        Mage::log($responceObject, null, 'BOOKID.log');
+
                         foreach ($responceObject as $responce) {
 
                             //if( strpos($shipping_description, $responce->summary->service) !== false ) {
@@ -57,7 +57,7 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                     if($is_rate == true) {
                         // add book
 
-                        $track_data = $api->toBook($order,$rate_id);
+                        $track_data = $api->toBook($order,$rate_id,$products_ids);
 
                         $shipment = $api->_initShipHawkShipment($order,$products_ids);
                         $shipment->register();

@@ -41,7 +41,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
         return $arr_res;
     }
 
-    public function toBook($order,$rate_id)
+    public function toBook($order,$rate_id,$products_ids)
     {
 
         $ship_addr = array();
@@ -58,7 +58,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
         $url_api = $api_url . 'shipments/book?api_key=' . $api_key;
 
         /* */
-        $origin_address_product = $this->_getProductOriginData($order);
+        $origin_address_product = $this->_getProductOriginData($products_ids);
         /* */
 
         $curl = curl_init();
@@ -160,13 +160,14 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
         return $origin_address;
     }
 
-    protected function _getProductOriginData($order) {
+    protected function _getProductOriginData($products_ids) {
         $origin_address_product = array();
+        Mage::log($products_ids, null, 'productids.log');
         try
         {
-            $order_items = $order->getAllItems();
+            //$order_items = $order->getAllItems();
             // get first product item
-            $origin_product = Mage::getModel('catalog/product')->load($order_items[0]->getProductId());
+            $origin_product = Mage::getModel('catalog/product')->load($products_ids['product_ids'][0]);
 
             $origin_address_product['origin_first_name'] = $origin_product->getData('shiphawk_origin_firstname');
             $origin_address_product['origin_last_name'] = $origin_product->getData('shiphawk_origin_lastname');
@@ -184,7 +185,6 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 
         return $origin_address_product;
     }
-
 
     /**
      * Save shipment
@@ -208,7 +208,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 
                 // add book
 
-                $track_data = $this->toBook($order,$rate_id);
+                $track_data = $this->toBook($order,$rate_id,$products_ids);
 
                 // add track
                 if($track_number = $track_data->shipment_id) {
@@ -353,7 +353,29 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
                 $arr_res = json_decode($resp);
 
                 if (!empty($arr_res)) {
-                    $shipment->addComment($resp);
+                    $comment = '';
+                    $event_list = '';
+                    //$shipment->addComment($resp);
+                    if (count($arr_res->events)) {
+
+                        foreach ($arr_res->events as $event) {
+                            $event_list .= $event . '<br>';
+                        }
+                    }
+
+                    try {
+
+                        $crated_time = $arr_res->created_at;
+                        //TODO convert date time
+                        //$crated_time = date("mm/dd/yy", strtotime($crated_time));
+                        $comment = $arr_res->resource_name . ': ' . $arr_res->id  . '<br>' . 'Created at: ' . $crated_time . '<br>' . $event_list;
+                        $shipment->addComment($comment);
+                        $shipment->sendEmail(true,$comment);
+
+                    }catch  (Mage_Core_Exception $e) {
+                        Mage::logException($e);
+                    }
+
                 }
 
                 $shipment->save();
