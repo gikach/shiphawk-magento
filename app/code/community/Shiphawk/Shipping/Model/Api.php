@@ -43,6 +43,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 
     public function toBook($order,$rate_id)
     {
+
         $ship_addr = array();
         $bill_addr = array();
 
@@ -64,10 +65,17 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 
         $origin_address = $this->_getOriginData();
 
+        $order_email = $ship_addr['email'];
+
+        if (Mage::getStoreConfig('carriers/shiphawk_shipping/order_received') == 1) {
+            $administrator_email = Mage::getStoreConfig('carriers/shiphawk_shipping/administrator_email');
+            $order_email = ($administrator_email) ? $administrator_email : $ship_addr['email'];
+        }
+
         $next_bussines_day = date('Y-m-d', strtotime('now +1 Weekday'));
         $items_array = array(
             'rate_id'=> $rate_id,
-            'order_email'=> $ship_addr['email'],
+            'order_email'=> $order_email,
             'xid'=>$order_increment_id,
             'origin_address' =>
                 array(

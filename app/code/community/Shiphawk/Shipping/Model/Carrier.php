@@ -106,6 +106,7 @@ class Shiphawk_Shipping_Model_Carrier
 
                 if($is_multi_zip) {
                     //add ShipHawk shipping
+                    $name_service = 'Shipping from multiple locations';
                     $result->append($this->_getShiphawkRateObject($name_service, $summ_price));
                 }
             }
@@ -148,7 +149,7 @@ class Shiphawk_Shipping_Model_Carrier
         /** @var Mage_Shipping_Model_Rate_Result_Method $rate */
         $rate = Mage::getModel('shipping/rate_result_method');
 
-        $ship_rate_id = str_replace(',', '', str_replace(' ', '_', $method_title));
+        $ship_rate_id = str_replace('-', '_', str_replace(',', '', str_replace(' ', '_', $method_title)));
 
         $rate->setCarrier($this->_code);
         //$rate->setCarrierTitle($this->getConfigData('title'));
@@ -159,6 +160,17 @@ class Shiphawk_Shipping_Model_Carrier
         $rate->setCost($price);
 
         return $rate;
+    }
+
+
+    public  function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 
     public function getShiphawkItems($request) {
