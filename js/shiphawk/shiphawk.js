@@ -3,6 +3,39 @@ document.observe("dom:loaded", function() {
         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
     }
 
+    function updateInput() {
+        var shiphawk_shipping_origins = document.getElementById("shiphawk_shipping_origins");
+
+        var url = '/shiphawk/index/origins';
+
+        var parameters = {
+            origin_id: shiphawk_shipping_origins.value
+        };
+
+        new Ajax.Request(url, {
+            method: 'post',
+            parameters: parameters,
+            onSuccess: function(transport)  {
+
+                responce_html  = JSON.parse(transport.responseText);
+
+                var el = document.createElement("div");
+
+                el.id = "origins_select";
+
+                el.update(responce_html);
+
+                shiphawk_shipping_origins.parentNode.replaceChild(el, shiphawk_shipping_origins);
+            },
+            onLoading:function(transport)
+            {
+
+            }
+        });
+    }
+
+    updateInput();
+
     var el = document.createElement("div");
 
     el.id = "type_product";
@@ -58,4 +91,3 @@ document.observe("dom:loaded", function() {
         $('shiphawk_type_of_product_value').value = el.id;
         $('type_product').hide();
     }
-

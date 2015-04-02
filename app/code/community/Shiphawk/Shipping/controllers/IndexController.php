@@ -3,12 +3,12 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
 {
     public function trackingAction() {
 
-        //  var_dump (file_get_contents('php://input'));
         $api_key_from_url = $this->getRequest()->getParam('api_key');
         $data_from_shiphawk = json_decode(file_get_contents('php://input'));
         $api_key = Mage::helper('shiphawk_shipping')->getApiKey();
 
         //curl -X POST -H Content-Type:application/json -d '{"event":"shipment.status_update","status":"in_transit","updated_at":"2015-01-14T10:43:16.702-08:00","shipment_id":1010226}' http://shiphawk.devigor.wdgtest.com/index.php/shiphawk/index/tracking?api_key=3331b35952ec7d99338a1cc5c496b55c
+        //curl -X POST -H Content-Type:application/json -d '{"event":"shipment.status_update","status":"in_transit","updated_at":"2015-01-14T10:43:16.702-08:00","shipment_id":1015967}' http://shiphawk.devigor.wdgtest.com/index.php/shiphawk/index/tracking?api_key=e1919f54fb93f63866f06049d6d45751
 
         if($api_key_from_url == $api_key) {
             try {
@@ -60,7 +60,6 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
 
         $url_api = $api_url . 'items/search/'.$search_tag.'?api_key='.$api_key;
 
-        Mage::log($url_api);
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -94,6 +93,26 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
         }
         $responce['responce_html'] = $responce_html;
         curl_close($curl);
+
+        $this->getResponse()->setBody( json_encode($responce) );
+    }
+
+    public function originsAction() {
+        $origin_id = trim(strip_tags($this->getRequest()->getPost('origin_id')));
+
+        $origins_collection = $collection = Mage::getModel('shiphawk_shipping/origins')->getCollection();
+
+        $responce = '<select name="product[shiphawk_shipping_origins]" id="shiphawk_shipping_origins">';
+
+        foreach($origins_collection as $origin) {
+            if ($origin_id != $origin->getId()) {
+                $responce .= '<option value="'.$origin->getId().'">'.$origin->getShiphawkOriginTitle(). '</option>';
+            }else{
+                $responce .= '<option selected value="'.$origin->getId().'">'.$origin->getShiphawkOriginTitle().  '</option>';
+            }
+        }
+
+        $responce .='</select>';
 
         $this->getResponse()->setBody( json_encode($responce) );
     }

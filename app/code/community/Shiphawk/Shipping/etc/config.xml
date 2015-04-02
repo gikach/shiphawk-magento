@@ -2,14 +2,23 @@
 <config>
     <modules>
         <Shiphawk_Shipping>
-            <version>1.0.1</version>
+            <version>1.0.4</version>
         </Shiphawk_Shipping>
     </modules>
     <global>
         <models>
             <shiphawk_shipping>
                 <class>Shiphawk_Shipping_Model</class>
+                <resourceModel>shiphawk_resource</resourceModel>
             </shiphawk_shipping>
+            <shiphawk_resource>
+                <class>Shiphawk_Shipping_Model_Resource</class>
+                <entities>
+                    <origins>
+                        <table>shiphawk_origins</table>
+                    </origins>
+                </entities>
+            </shiphawk_resource>
         </models>
         <blocks>
             <shiphawk_shipping>
@@ -90,7 +99,7 @@
             </updates>
         </layout>
     </adminhtml>
-    <!--<admin>
+    <admin>
         <routers>
             <adminhtml>
                 <args>
@@ -100,7 +109,7 @@
                 </args>
             </adminhtml>
         </routers>
-    </admin>-->
+    </admin>
     <admin>
         <routers>
             <shiphawk_shipping>
