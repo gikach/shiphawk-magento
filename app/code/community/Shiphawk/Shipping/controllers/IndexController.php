@@ -100,9 +100,17 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
     public function originsAction() {
         $origin_id = trim(strip_tags($this->getRequest()->getPost('origin_id')));
 
+        $is_mass_action = $this->getRequest()->getPost('is_mass_action');
+
         $origins_collection = $collection = Mage::getModel('shiphawk_shipping/origins')->getCollection();
 
         $responce = '<select name="product[shiphawk_shipping_origins]" id="shiphawk_shipping_origins">';
+
+        if($is_mass_action == 1) {
+            $responce = '<select name="attributes[shiphawk_shipping_origins]" id="shiphawk_shipping_origins">';
+        }
+
+        $responce .= '<option value=""></option>';
 
         foreach($origins_collection as $origin) {
             if ($origin_id != $origin->getId()) {

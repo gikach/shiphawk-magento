@@ -5,11 +5,17 @@ document.observe("dom:loaded", function() {
 
     function updateInput() {
         var shiphawk_shipping_origins = document.getElementById("shiphawk_shipping_origins");
+        var is_mass_action = 0;
 
+        // check is it mass edit attribute action
+        if (document.URL.indexOf('catalog_product_action_attribute') > 0) {
+            is_mass_action = 1;
+        }
         var url = '/shiphawk/index/origins';
 
         var parameters = {
-            origin_id: shiphawk_shipping_origins.value
+            origin_id: shiphawk_shipping_origins.value,
+            is_mass_action : is_mass_action
         };
 
         new Ajax.Request(url, {
