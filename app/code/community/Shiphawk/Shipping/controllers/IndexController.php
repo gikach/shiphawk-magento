@@ -18,25 +18,61 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
 
             $data_from_shiphawk = (array) $data_from_shiphawk;
 
+                Mage::log($data_from_shiphawk, null, 'TrackingData.log');
+
             $shipment_status_updates = Mage::getStoreConfig('carriers/shiphawk_shipping/shipment_status_updates');
             $updates_tracking_url =    Mage::getStoreConfig('carriers/shiphawk_shipping/updates_tracking_url');
             $comment = '';
+/* Also for specific status updates we need to set texts as follows:
+"Shipment status changed to Confirmed (mm/dd/yy at 9:00am). Your shipment has been successfully confirmed.”
+"Shipment status changed to Scheduled (mm/dd/yy at 9:00am). Your shipment has been scheduled for pickup.”
+"Shipment status changed to Agent Prep (mm/dd/yy at 9:00am). Your shipment is now being professionally prepared for carrier pickup.”
+"Shipment status changed to In Transit (mm/dd/yy at 9:00am). Your shipment is with the carrier and is in transit.”
+"Shipment status changed to Delivered (mm/dd/yy at 9:00am). Your shipment has been delivered!”
+"Shipment status changed to Cancelled (mm/dd/yy at 9:00am). Your shipment has been cancelled successfully.” */
+                $crated_time = $this->convertDateTome($data_from_shiphawk['updated_at']);
 
-                if($data_from_shiphawk['event'] == 'shipment.status_update') {
+                switch ($data_from_shiphawk['status']) {
+                    case 'in_transit':
+                        $comment = "Shipment status changed to In Transit (" . $crated_time['date'] . " at " . $crated_time['time'] . "). Your shipment is with the carrier and is in transit.";
+                        break;
+                    case 'confirmed':
+                        $comment = "Shipment status changed to Confirmed (" . $crated_time['date'] . " at " . $crated_time['time'] . "). Your shipment has been successfully confirmed.";
+                        break;
+                    case 'scheduled':
+                        $comment = "Shipment status changed to Scheduled (" . $crated_time['date'] . " at " . $crated_time['time'] . "). Your shipment has been scheduled for pickup.";
+                        break;
+                    case 'agent_prep':
+                        $comment = "Shipment status changed to Agent Prep (" . $crated_time['date'] . " at " . $crated_time['time'] . "). Your shipment is now being professionally prepared for carrier pickup.";
+                        break;
+                    case 'delivered':
+                        $comment = "Shipment status changed to Delivered (" . $crated_time['date'] . " at " . $crated_time['time'] . "). Your shipment has been delivered!";
+                        break;
+                    case 'cancelled':
+                        $comment = "Shipment status changed to Cancelled (" . $crated_time['date'] . " at " . $crated_time['time'] . "). Your shipment has been cancelled successfully.";
+                        break;
+                }
+
+                $shipment->addComment($comment);
+                if($shipment_status_updates) {
+                    $shipment->sendUpdateEmail(true, $comment);
+                }
+
+                /*if($data_from_shiphawk['event'] == 'shipment.status_update') {
                     $comment = $data_from_shiphawk['updated_at'] . ': Status has been changed to ' . $data_from_shiphawk['status'];
                     $shipment->addComment($comment);
                     if($shipment_status_updates) {
                         $shipment->sendUpdateEmail(true, $comment);
                     }
-                }
+                }*/
 
-                if($data_from_shiphawk['event'] == 'shipment.tracking_update') {
+              /*  if($data_from_shiphawk['event'] == 'shipment.tracking_update') {
                     $comment = $data_from_shiphawk['updated_at'] . 'There is a tracking number available for your shipment - ' . $data_from_shiphawk['tracking_number'] . '<a href="' . $data_from_shiphawk['tracking_url'] . '" target="_blank">Click here to track.</a>';
                     $shipment->addComment($comment);
                     if($updates_tracking_url) {
                         $shipment->sendUpdateEmail(true, $comment);
                     }
-                }
+                }*/
 
             //$shipment->addComment(implode(',', $data_from_shiphawk));
 
@@ -48,6 +84,17 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
             }
 
         }
+    }
+
+    public function convertDateTome ($date_time) {
+        ///2015-04-01T15:57:42Z
+        $result = array();
+        $t = explode('T', $date_time);
+        $result['date'] = date("m/d/y", strtotime($t[0]));
+
+        $result['time'] = date("g:i a", strtotime(substr($t[1], 0, -1)));
+
+        return $result;
     }
 
     /* suggest items type in product page */
@@ -110,7 +157,7 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
             $responce = '<select name="attributes[shiphawk_shipping_origins]" id="shiphawk_shipping_origins">';
         }
 
-        $responce .= '<option value=""></option>';
+        $responce .= '<option value="">default</option>';
 
         foreach($origins_collection as $origin) {
             if ($origin_id != $origin->getId()) {

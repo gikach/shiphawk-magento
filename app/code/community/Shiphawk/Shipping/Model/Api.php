@@ -43,7 +43,6 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 
     public function toBook($order,$rate_id,$products_ids)
     {
-
         $ship_addr = array();
         $bill_addr = array();
 
@@ -370,10 +369,9 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 
                     try {
                         Mage::log($arr_res, null, 'tracking.log');
-                        $crated_time = $arr_res->created_at;
-                        //TODO convert date time
-                        //$crated_time = date("mm/dd/yy", strtotime($crated_time));
-                        $comment = $arr_res->resource_name . ': ' . $arr_res->id  . '<br>' . 'Created at: ' . $crated_time . '<br>' . $event_list;
+                        $crated_time = $this->convertDateTome($arr_res->created_at);
+
+                        $comment = $arr_res->resource_name . ': ' . $arr_res->id  . '<br>' . 'Created: ' . $crated_time['date'] . ' at ' . $crated_time['time'] . '<br>' . $event_list;
                         $shipment->addComment($comment);
                         $shipment->sendEmail(true,$comment);
 
@@ -404,7 +402,14 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
     }
 
     public function convertDateTome ($date_time) {
+        ///2015-04-01T15:57:42Z
+        $result = array();
+        $t = explode('T', $date_time);
+        $result['date'] = date("m/d/y", strtotime($t[0]));
 
+        $result['time'] = date("g:i a", strtotime(substr($t[1], 0, -1)));
+
+        return $result;
     }
 
     protected function _getTrackNumber($shipment) {
@@ -420,7 +425,10 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
     }
 
     public function getShipmentStatus($shipment_id) {
-        
+        //curl -X POST -H Content-Type:application/json -d '{"event":"shipment.status_update","status":"in_transit","updated_at":"2015-01-14T10:43:16.702-08:00","shipment_id":1015985}' http://shiphawk.devigor.wdgtest.com/index.php/shiphawk/index/tracking?api_key=e1919f54fb93f63866f06049d6d45751
+
+        //GET /api/v1/shipments/{shipment_id}/status
+
     }
 
 
