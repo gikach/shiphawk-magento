@@ -91,4 +91,27 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
         $this->_redirect('adminhtml/sales_order/view', array('order_id' => $orderId));
     }
 
+
+    public function newshipmentAction()
+    {
+        $orderId= $this->getRequest()->getParam('order_id');
+
+        try {
+            $order = Mage::getModel('sales/order')->load($orderId);
+
+
+Mage::log($orderId);
+
+        } catch (Mage_Core_Exception $e) {
+            $this->_getSession()->addError($e->getMessage());
+            $this->_redirect('adminhtml/sales_order/view', array('order_id' => $orderId));
+        } catch (Exception $e) {
+            Mage::logException($e);
+            $this->_getSession()->addError($this->__('Cannot save shipment.'));
+            $this->_redirect('adminhtml/sales_order/view', array('order_id' => $orderId));
+        }
+
+        $this->_redirect('adminhtml/sales_order/view', array('order_id' => $orderId));
+    }
+
 }

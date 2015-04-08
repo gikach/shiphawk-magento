@@ -403,6 +403,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 
     public function convertDateTome ($date_time) {
         ///2015-04-01T15:57:42Z
+        //todo check time
         $result = array();
         $t = explode('T', $date_time);
         $result['date'] = date("m/d/y", strtotime($t[0]));

@@ -32,6 +32,8 @@ document.observe("dom:loaded", function() {
                 el.update(responce_html);
 
                 shiphawk_shipping_origins.parentNode.replaceChild(el, shiphawk_shipping_origins);
+
+                //if mass edit disable input
             },
             onLoading:function(transport)
             {
@@ -94,6 +96,14 @@ document.observe("dom:loaded", function() {
 });
     function setItemid(el) {
         $('shiphawk_type_of_product').value = el.innerHTML;
+
+        if ($('shiphawk_type_of_product_value').disabled == true) {
+            $('shiphawk_type_of_product_value').disabled = false;
+        }
+
         $('shiphawk_type_of_product_value').value = el.id;
+        //mass update
+
+
         $('type_product').hide();
     }

@@ -162,31 +162,22 @@ class Shiphawk_Shipping_Model_Carrier
         return $rate;
     }
 
-
-    public  function generateRandomString($length = 10) {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
-        }
-        return $randomString;
-    }
-
     public function getShiphawkItems($request) {
         $items = array();
 
         foreach ($request->getAllItems() as $item) {
             $product_id = $item->getProductId();
             $product = Mage::getModel('catalog/product')->load($product_id);
+            $product_qty = (($product->getShiphawkQuantity() > 0)) ? $product->getShiphawkQuantity() : 1;
             if($product->getWeight() > 0) {
+
                 $items[] = array(
                     'width' => $product->getShiphawkWidth(),
                     'length' => $product->getShiphawkLength(),
                     'height' => $product->getShiphawkHeight(),
                     'weight' => $product->getWeight(),
                     'value' => $this->getShipHawkItemValue($product),
-                    'quantity' => $product->getShiphawkQuantity()*$item->getQty(),
+                    'quantity' => $product_qty*$item->getQty(),
                     'packed' => $this->getIsPacked($product),
                     'id' => $product->getShiphawkTypeOfProductValue(),
                     'zip'=> $this->getOriginZip($product),
@@ -199,7 +190,7 @@ class Shiphawk_Shipping_Model_Carrier
                     'length' => $product->getShiphawkLength(),
                     'height' => $product->getShiphawkHeight(),
                     'value' => $this->getShipHawkItemValue($product),
-                    'quantity' => $product->getShiphawkQuantity()*$item->getQty(),
+                    'quantity' => $product_qty*$item->getQty(),
                     'packed' => $this->getIsPacked($product),
                     'id' => $product->getShiphawkTypeOfProductValue(),
                     'zip'=> $this->getOriginZip($product),
@@ -209,7 +200,7 @@ class Shiphawk_Shipping_Model_Carrier
             }
 
         }
-
+        Mage::log($items, null, 'items.log');
         return $items;
     }
 
@@ -239,7 +230,15 @@ class Shiphawk_Shipping_Model_Carrier
 
     public function getOriginZip($product) {
         $default_origin_zip = Mage::getStoreConfig('carriers/shiphawk_shipping/default_origin');
-        $product_origin_zip_code = $product->getShiphawkOriginZipcode();
+
+        //$product_origin_zip_code = $product->getShiphawkOriginZipcode();
+
+        // get zip code froms Shiping Origin
+        $shipping_origin_id = $product->getData('shiphawk_shipping_origins');
+
+        $shipping_origin = Mage::getModel('shiphawk_shipping/origins')->load($shipping_origin_id);
+        $product_origin_zip_code = $shipping_origin->getData('shiphawk_origin_zipcode');
+
         $product_origin_zip_code = (empty($product_origin_zip_code)) ? $default_origin_zip : $product_origin_zip_code;
 
         return $product_origin_zip_code;

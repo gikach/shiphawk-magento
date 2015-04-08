@@ -5,11 +5,11 @@
             <title>Shiphawk Shipping Origins</title>
             <sort_order>55</sort_order>
             <children>
-                <synonyms module="shiphawk_shipping">
+                <origins module="shiphawk_shipping">
                     <title>Manage Shipping Origins</title>
                     <sort_order>30</sort_order>
                     <action>adminhtml/origins</action>
-                </synonyms>
+                </origins>
             </children>
         </shiphawk_shipping>
     </menu>

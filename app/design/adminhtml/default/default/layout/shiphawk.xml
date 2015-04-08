@@ -33,6 +33,24 @@
         </reference>
     </adminhtml_catalog_product_new>
 
+    <adminhtml_sales_order_view>
+        <reference name="head">
+
+            <action method="addJs"><script>shiphawk/shiphawk_shipment.js</script></action>
+
+            <action method="addItem"><type>js_css</type><name>shiphawk/shiphawk.css</name></action>
+
+            <action method="addItem">
+                <type>js_css</type>
+                <name>prototype/windows/themes/default.css</name>
+            </action>
+            <action method="addCss">
+                <name>lib/prototype/windows/themes/magento.css</name>
+            </action>
+
+        </reference>
+    </adminhtml_sales_order_view>
+
     <adminhtml_origins_index>
         <reference name="content">
             <block type="shiphawk_shipping/adminhtml_origins" name="origins.grid_container" />
