@@ -57,7 +57,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
         $url_api = $api_url . 'shipments/book?api_key=' . $api_key;
 
         /* */
-        $origin_address_product = $this->_getProductOriginData($products_ids);
+        $origin_address_product = $this->_getProductOriginData($products_ids['product_ids'][0]);
         /* */
 
         $curl = curl_init();
@@ -159,14 +159,14 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
         return $origin_address;
     }
 
-    protected function _getProductOriginData($products_ids) {
+    protected function _getProductOriginData($products_id) {
         $origin_address_product = array();
 
         try
         {
             //$order_items = $order->getAllItems();
             // get first product item
-            $origin_product = Mage::getModel('catalog/product')->load($products_ids['product_ids'][0]);
+            $origin_product = Mage::getModel('catalog/product')->load($products_id);
 
             $shipping_origin_id = $origin_product->getData('shiphawk_shipping_origins');
 

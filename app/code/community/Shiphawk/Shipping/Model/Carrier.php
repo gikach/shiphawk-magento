@@ -58,7 +58,7 @@ class Shiphawk_Shipping_Model_Carrier
                     // if $rate_filter = 'best' then it is only one rate
                     if(($is_multi_zip)||($rate_filter == 'best')) {
                         Mage::getSingleton('core/session')->setMultiZipCode(true);
-                        $toOrder[$responceObject[0]->id]['product_ids'] = $this->_getProductIds($items_);
+                        $toOrder[$responceObject[0]->id]['product_ids'] = $this->getProductIds($items_);
                         $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->summary->price;
                         $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->summary->service;
                         $toOrder[$responceObject[0]->id]['items'] = $items_;
@@ -67,7 +67,7 @@ class Shiphawk_Shipping_Model_Carrier
                     }else{
                         Mage::getSingleton('core/session')->setMultiZipCode(false);
                         foreach ($responceObject as $responce) {
-                            $toOrder[$responce->id]['product_ids'] = $this->_getProductIds($items_);
+                            $toOrder[$responce->id]['product_ids'] = $this->getProductIds($items_);
                             $toOrder[$responce->id]['price'] = $responce->summary->price;
                             $toOrder[$responce->id]['name'] = $responce->summary->service;
                             $toOrder[$responce->id]['items'] = $items_;
@@ -80,7 +80,7 @@ class Shiphawk_Shipping_Model_Carrier
             }
 
             if(!$api_error) {
-                $services = $this->_getServices($ship_responces);
+                $services = $this->getServices($ship_responces);
                 $name_service = '';
                 $summ_price = 0;
 
@@ -131,7 +131,7 @@ class Shiphawk_Shipping_Model_Carrier
         );
     }
 
-    protected function  _getProductIds($_items) {
+    public function  getProductIds($_items) {
      $products_ids = array();
         foreach($_items as $_item) {
             $products_ids[] = $_item['product_id'];
@@ -168,16 +168,21 @@ class Shiphawk_Shipping_Model_Carrier
         foreach ($request->getAllItems() as $item) {
             $product_id = $item->getProductId();
             $product = Mage::getModel('catalog/product')->load($product_id);
-            $product_qty = (($product->getShiphawkQuantity() > 0)) ? $product->getShiphawkQuantity() : 1;
-            if($product->getWeight() > 0) {
 
+            $product_qty = (($product->getShiphawkQuantity() > 0)) ? $product->getShiphawkQuantity() : 1;
+
+            //hack for admin shipment in popup
+            $qty_ordered = ($item->getQty() > 0 ) ? $item->getQty() : $item->getData('qty_ordered');
+
+            if($product->getWeight() > 0) {
                 $items[] = array(
                     'width' => $product->getShiphawkWidth(),
                     'length' => $product->getShiphawkLength(),
                     'height' => $product->getShiphawkHeight(),
                     'weight' => $product->getWeight(),
                     'value' => $this->getShipHawkItemValue($product),
-                    'quantity' => $product_qty*$item->getQty(),
+                    //'quantity' => $product_qty*$item->getQty(),
+                    'quantity' => $product_qty*$qty_ordered,
                     'packed' => $this->getIsPacked($product),
                     'id' => $product->getShiphawkTypeOfProductValue(),
                     'zip'=> $this->getOriginZip($product),
@@ -190,7 +195,8 @@ class Shiphawk_Shipping_Model_Carrier
                     'length' => $product->getShiphawkLength(),
                     'height' => $product->getShiphawkHeight(),
                     'value' => $this->getShipHawkItemValue($product),
-                    'quantity' => $product_qty*$item->getQty(),
+                    //'quantity' => $product_qty*$item->getQty(),
+                    'quantity' => $product_qty*$qty_ordered,
                     'packed' => $this->getIsPacked($product),
                     'id' => $product->getShiphawkTypeOfProductValue(),
                     'zip'=> $this->getOriginZip($product),
@@ -200,7 +206,7 @@ class Shiphawk_Shipping_Model_Carrier
             }
 
         }
-        Mage::log($items, null, 'items.log');
+
         return $items;
     }
 
@@ -261,7 +267,7 @@ class Shiphawk_Shipping_Model_Carrier
         return $tmp;
     }
 
-    protected function _getServices($ship_responces) {
+    public function getServices($ship_responces) {
         $services = array();
         foreach($ship_responces as $ship_responce) {
             if(is_array($ship_responce)) {

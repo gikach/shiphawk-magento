@@ -102,8 +102,6 @@ document.observe("dom:loaded", function() {
         }
 
         $('shiphawk_type_of_product_value').value = el.id;
-        //mass update
-
 
         $('type_product').hide();
     }
