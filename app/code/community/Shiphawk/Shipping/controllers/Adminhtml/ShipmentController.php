@@ -154,9 +154,10 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                         if($shiphawk_rate_id == $rate_id) {
                             $track_data = $api->toBook($order,$rate_id,$products_ids);
 //name
-                            $order->setShippingDescription($products_ids['name']);
-                            $order->setShippingAmount($products_ids['price']);
-                            $order->save();
+                            //todo save prce in custom attribute
+                            //$order->setShippingDescription($products_ids['name']);
+                            //$order->setShippingAmount($products_ids['price']);
+                            //$order->save();
 
                             $shipment = $api->_initShipHawkShipment($order,$products_ids);
                             $shipment->register();
@@ -174,9 +175,11 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                     }else{
                         $track_data = $api->toBook($order,$rate_id,$products_ids);
 //name
-                        $order->setShippingDescription($shiphawk_rate_id);
-                        $order->setShippingAmount($multi_price);
-                        $order->save();
+
+                        //todo save prce in custom attribute
+                        //$order->setShippingDescription($shiphawk_rate_id);
+                        //$order->setShippingAmount($multi_price);
+                        //$order->save();
 
                         $shipment = $api->_initShipHawkShipment($order,$products_ids);
                         $shipment->register();

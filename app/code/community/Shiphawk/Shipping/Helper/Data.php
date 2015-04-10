@@ -94,5 +94,49 @@ class Shiphawk_Shipping_Helper_Data extends
         return $randomString;
     }
 
+    public function checkShipHawkAttributes($from_zip, $to_zip, $items_, $rate_filter) {
+        $error = array();
+        if (empty($from_zip)) {
+            $error['from_zip'] = 1;
+        }
+
+        if (empty($to_zip)) {
+            $error['to_zip'] = 1;
+        }
+
+        if (empty($rate_filter)) {
+            $error['rate_filter'] = 1;
+        }
+
+        foreach ($items_ as $item) {
+
+            if($this->checkItem($item)) {
+                $error['items']['name'][] = $this->checkItem($item);
+            }
+        }
+
+        return $error;
+    }
+
+    public function checkItem($item) {
+        $product_name = Mage::getModel('catalog/product')->load($item['product_id'])->getName();
+
+        if(empty($item['width'])) return $product_name;
+        if(empty($item['length'])) return $product_name;
+        if(empty($item['height'])) return $product_name;
+        if(empty($item['quantity'])) return $product_name;
+        if(empty($item['packed'])) return $product_name;
+
+        return null;
+    }
+
+    /*
+
+    Sorry, not all products have necessary ShipHawk fields filled in. Please add necessary data for next products:
+    prod.name1
+prod.name2
+
+    */
+
 
 }

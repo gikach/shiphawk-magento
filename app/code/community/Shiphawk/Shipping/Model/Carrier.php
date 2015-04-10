@@ -48,34 +48,43 @@ class Shiphawk_Shipping_Model_Carrier
         }
         try {
             foreach($grouped_items_by_zip as $from_zip=>$items_) {
-                $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter);
-                $ship_responces[] = $responceObject;
+                $checkattributes = $helper->checkShipHawkAttributes($from_zip, $to_zip, $items_, $rate_filter);
 
-                if(is_object($responceObject)) {
+
+                if(empty($checkattributes)) {
+                    $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter);
+                    $ship_responces[] = $responceObject;
+
+                    if(is_object($responceObject)) {
                         $api_error = true;
                         Mage::log('ShipHawk responce: '.$responceObject->error, null, 'ShipHawk.log');
-                }else{
-                    // if $rate_filter = 'best' then it is only one rate
-                    if(($is_multi_zip)||($rate_filter == 'best')) {
-                        Mage::getSingleton('core/session')->setMultiZipCode(true);
-                        $toOrder[$responceObject[0]->id]['product_ids'] = $this->getProductIds($items_);
-                        $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->summary->price;
-                        $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->summary->service;
-                        $toOrder[$responceObject[0]->id]['items'] = $items_;
-                        $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
-                        $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
                     }else{
-                        Mage::getSingleton('core/session')->setMultiZipCode(false);
-                        foreach ($responceObject as $responce) {
-                            $toOrder[$responce->id]['product_ids'] = $this->getProductIds($items_);
-                            $toOrder[$responce->id]['price'] = $responce->summary->price;
-                            $toOrder[$responce->id]['name'] = $responce->summary->service;
-                            $toOrder[$responce->id]['items'] = $items_;
-                            $toOrder[$responce->id]['from_zip'] = $from_zip;
-                            $toOrder[$responce->id]['to_zip'] = $to_zip;
+                        // if $rate_filter = 'best' then it is only one rate
+                        if(($is_multi_zip)||($rate_filter == 'best')) {
+                            Mage::getSingleton('core/session')->setMultiZipCode(true);
+                            $toOrder[$responceObject[0]->id]['product_ids'] = $this->getProductIds($items_);
+                            $toOrder[$responceObject[0]->id]['price'] = $responceObject[0]->summary->price;
+                            $toOrder[$responceObject[0]->id]['name'] = $responceObject[0]->summary->service;
+                            $toOrder[$responceObject[0]->id]['items'] = $items_;
+                            $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
+                            $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
+                        }else{
+                            Mage::getSingleton('core/session')->setMultiZipCode(false);
+                            foreach ($responceObject as $responce) {
+                                $toOrder[$responce->id]['product_ids'] = $this->getProductIds($items_);
+                                $toOrder[$responce->id]['price'] = $responce->summary->price;
+                                $toOrder[$responce->id]['name'] = $responce->summary->service;
+                                $toOrder[$responce->id]['items'] = $items_;
+                                $toOrder[$responce->id]['from_zip'] = $from_zip;
+                                $toOrder[$responce->id]['to_zip'] = $to_zip;
+                            }
                         }
                     }
+                }else{
+                    $api_error = true;
                 }
+
+
 
             }
 
