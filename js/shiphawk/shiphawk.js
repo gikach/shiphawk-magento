@@ -11,7 +11,7 @@ document.observe("dom:loaded", function() {
         if (document.URL.indexOf('catalog_product_action_attribute') > 0) {
             is_mass_action = 1;
         }
-        var url = '/shiphawk/index/origins';
+        var url = 'shiphawk/index/origins';
         var myScript = document.getElementById('shiphawkjsfile');
         var myScriptSrc = myScript.getAttribute('src');
         myScriptSrc = myScriptSrc.substring(0,myScriptSrc.length - 23);
