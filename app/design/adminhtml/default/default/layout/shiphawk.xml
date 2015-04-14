@@ -85,5 +85,12 @@
         </reference>
     </shiphawk_shipping_adminhtml_shipment_newshipment>
 
+    <adminhtml_sales_order_view>
+        <reference name="order_info">
+            <action method="setTemplate">
+                <template>shiphawk/amount.phtml</template>
+            </action>
+        </reference>
+    </adminhtml_sales_order_view>
 
 </layout>
