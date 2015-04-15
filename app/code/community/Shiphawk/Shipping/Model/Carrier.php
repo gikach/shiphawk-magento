@@ -96,7 +96,8 @@ class Shiphawk_Shipping_Model_Carrier
                 foreach ($services as $id_service=>$service) {
                     if (!$is_multi_zip) {
                         //add ShipHawk shipping
-                        $result->append($this->_getShiphawkRateObject($service['name'], $service['price']));
+                        $shipping_price = $helper->getDiscountShippingPrice($service['price']);
+                        $result->append($this->_getShiphawkRateObject($service['name'], $shipping_price, $service['price']));
                     }else{
                         $name_service .= $service['name'] . ', ';
                         $summ_price += $service['price'];
@@ -116,7 +117,8 @@ class Shiphawk_Shipping_Model_Carrier
                 if($is_multi_zip) {
                     //add ShipHawk shipping
                     $name_service = 'Shipping from multiple locations';
-                    $result->append($this->_getShiphawkRateObject($name_service, $summ_price));
+                    $shipping_price = $helper->getDiscountShippingPrice($summ_price);
+                    $result->append($this->_getShiphawkRateObject($name_service, $shipping_price, $summ_price));
                 }
             }
 
@@ -153,12 +155,12 @@ class Shiphawk_Shipping_Model_Carrier
      *
      * @return Mage_Shipping_Model_Rate_Result_Method
      */
-    protected function _getShiphawkRateObject($method_title, $price)
+    protected function _getShiphawkRateObject($method_title, $price, $true_price)
     {
         /** @var Mage_Shipping_Model_Rate_Result_Method $rate */
         $rate = Mage::getModel('shipping/rate_result_method');
 
-        $ship_rate_id = str_replace('-', '_', str_replace(',', '', str_replace(' ', '_', $method_title)));
+        $ship_rate_id = str_replace('-', '_', str_replace(',', '', str_replace(' ', '_', $method_title.$true_price)));
 
         $rate->setCarrier($this->_code);
         //$rate->setCarrierTitle($this->getConfigData('title'));

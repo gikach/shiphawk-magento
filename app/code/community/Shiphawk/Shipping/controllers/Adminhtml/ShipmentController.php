@@ -42,11 +42,14 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                     }else{
                         $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter);
 
+                        $original_shipping_price = $order->getShiphawkShippingAmount();
                         foreach ($responceObject as $responce) {
 
                             //if( strpos($shipping_description, $responce->summary->service) !== false ) {
-                            $shipping_amaount = $order->getShippingAmount();
-                            if( $shipping_amaount == $responce->summary->price ) {
+                            //todo сравнить с настоящей стоимостью
+                            //$shipping_amaount = $order->getShippingAmount();
+
+                            if( $original_shipping_price == $responce->summary->price ) {
                                 $rate_id = $responce->id;
                                 $is_rate = true;
                                 break;
@@ -156,8 +159,8 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
 //name
                             //todo save prce in custom attribute
                             //$order->setShippingDescription($products_ids['name']);
-                            //$order->setShippingAmount($products_ids['price']);
-                            //$order->save();
+                            $order->setShiphawkShippingAmount($products_ids['price']);
+                            $order->save();
 
                             $shipment = $api->_initShipHawkShipment($order,$products_ids);
                             $shipment->register();
@@ -174,12 +177,11 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                         }
                     }else{
                         $track_data = $api->toBook($order,$rate_id,$products_ids);
-//name
 
                         //todo save prce in custom attribute
                         //$order->setShippingDescription($shiphawk_rate_id);
-                        //$order->setShippingAmount($multi_price);
-                        //$order->save();
+                        $order->setShiphawkShippingAmount($multi_price);
+                        $order->save();
 
                         $shipment = $api->_initShipHawkShipment($order,$products_ids);
                         $shipment->register();
