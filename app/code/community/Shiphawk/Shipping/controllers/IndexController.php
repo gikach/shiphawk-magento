@@ -18,21 +18,14 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
 
             $data_from_shiphawk = (array) $data_from_shiphawk;
 
-                Mage::log($data_from_shiphawk, null, 'TrackingData.log');
+            Mage::log($data_from_shiphawk, null, 'TrackingData.log');
 
             $shipment_status_updates = Mage::getStoreConfig('carriers/shiphawk_shipping/shipment_status_updates');
             $updates_tracking_url =    Mage::getStoreConfig('carriers/shiphawk_shipping/updates_tracking_url');
             $comment = '';
 
-/* Also for specific status updates we need to set texts as follows:
-"Shipment status changed to Confirmed (mm/dd/yy at 9:00am). Your shipment has been successfully confirmed.”
-"Shipment status changed to Scheduled (mm/dd/yy at 9:00am). Your shipment has been scheduled for pickup.”
-"Shipment status changed to Agent Prep (mm/dd/yy at 9:00am). Your shipment is now being professionally prepared for carrier pickup.”
-"Shipment status changed to In Transit (mm/dd/yy at 9:00am). Your shipment is with the carrier and is in transit.”
-"Shipment status changed to Delivered (mm/dd/yy at 9:00am). Your shipment has been delivered!”
-"Shipment status changed to Cancelled (mm/dd/yy at 9:00am). Your shipment has been cancelled successfully.” */
                 $crated_time = $this->convertDateTome($data_from_shiphawk['updated_at']);
-//todo [event] => shipment.tracking_update
+                //todo [event] => shipment.tracking_update
 
                 switch ($data_from_shiphawk['status']) {
                     case 'in_transit':
@@ -76,7 +69,7 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
                     }
                 }*/
 
-            //$shipment->addComment(implode(',', $data_from_shiphawk));
+                //$shipment->addComment(implode(',', $data_from_shiphawk));
 
             $shipment->save();
             }catch (Mage_Core_Exception $e) {

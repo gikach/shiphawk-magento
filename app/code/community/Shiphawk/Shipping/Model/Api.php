@@ -9,7 +9,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
         $url_api_rates = $helper->getApiUrl() . 'rates/standard?api_key=' . $api_key;
 
         $from_type  = Mage::getStoreConfig('carriers/shiphawk_shipping/origin_location_type');
-        //$rate_filter = $helper->getRateFilter();
+
         $curl = curl_init();
 
         //TODO if products has various Origin Location Type ?
@@ -359,7 +359,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
                 if (!empty($arr_res)) {
                     $comment = '';
                     $event_list = '';
-                    //$shipment->addComment($resp);
+
                     if (count($arr_res->events)) {
 
                         foreach ($arr_res->events as $event) {
@@ -402,8 +402,6 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
     }
 
     public function convertDateTome ($date_time) {
-        ///2015-04-01T15:57:42Z
-        //todo check time
         $result = array();
         $t = explode('T', $date_time);
         $result['date'] = date("m/d/y", strtotime($t[0]));

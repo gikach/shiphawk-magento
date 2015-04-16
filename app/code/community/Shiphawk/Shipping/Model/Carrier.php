@@ -267,7 +267,7 @@ class Shiphawk_Shipping_Model_Carrier
         $product_is_packed = ($product_is_packed == 2) ? $default_is_packed : $product_is_packed;
 
         return ($product_is_packed ? 'true' : 'false');
-	//return $product_is_packed;
+
     }
 
     public function getGroupedItemsByZip($items) {

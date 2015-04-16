@@ -45,10 +45,6 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                         $original_shipping_price = $order->getShiphawkShippingAmount();
                         foreach ($responceObject as $responce) {
 
-                            //if( strpos($shipping_description, $responce->summary->service) !== false ) {
-                            //todo сравнить с настоящей стоимостью
-                            //$shipping_amaount = $order->getShippingAmount();
-
                             if( $original_shipping_price == $responce->summary->price ) {
                                 $rate_id = $responce->id;
                                 $is_rate = true;
@@ -151,14 +147,10 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
 
             foreach($shiphawk_rate_data as $rate_id=>$products_ids) {
 
-                //если $is_multi_zip то используем  $rate_filter = best значит в респонсе будет всего один метод
                     // add book
                     if($is_multi == 0) {
                         if($shiphawk_rate_id == $rate_id) {
                             $track_data = $api->toBook($order,$rate_id,$products_ids);
-//name
-                            //todo save prce in custom attribute
-                            //$order->setShippingDescription($products_ids['name']);
                             $order->setShiphawkShippingAmount($products_ids['price']);
                             $order->save();
 
@@ -178,8 +170,6 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                     }else{
                         $track_data = $api->toBook($order,$rate_id,$products_ids);
 
-                        //todo save prce in custom attribute
-                        //$order->setShippingDescription($shiphawk_rate_id);
                         $order->setShiphawkShippingAmount($multi_price);
                         $order->save();
 
@@ -196,8 +186,6 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                         $shipmentCreatedMessage = $this->__("The multi-origin shipment's has been created.");
                         $this->_getSession()->addSuccess($shipmentCreatedMessage);
                     }
-
-
 
             }
 
