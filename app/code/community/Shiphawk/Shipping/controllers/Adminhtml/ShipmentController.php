@@ -105,7 +105,7 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
 
             $this->loadLayout();
 
-            $this->getLayout()->getBlock('content')->append($this->getLayout()->createBlock('core/template')->setTemplate('shiphawk/shipment.phtml')->setOrder($order));
+            $this->getLayout()->getBlock('content')->append($this->getLayout()->createBlock('shiphawk_shipping/adminhtml_shipment')->setTemplate('shiphawk/shipment.phtml')->setOrder($order));
 
             $this->renderLayout();
 
