@@ -1,22 +1,23 @@
-<?php $order =  $this->getOrder();
+<?php
+    $order =  $this->getOrder();
 
-$result = $this->getNewShipHawkRate($order);
+    $result = $this->getNewShipHawkRate($order);
 
-if(($result == null) or ($result['error'])) {
-    if($result['error']) {
-        echo $result['error'];
+    if(($result == null) or ($result['error'])) {
+        if($result['error']) {
+            echo $result['error'];
+        }
+        return;
     }
-    return;
-}
 
-$is_multi_zip = $result['is_multi_zip'];
-$toOrder = $result['to_order'];
-$summ_price = $result['summ_price'];
-$rate_filter = $result['rate_filter'];
-$name_service = $result['name_service'];
+    $is_multi_zip = $result['is_multi_zip'];
+    $toOrder = $result['to_order'];
+    $summ_price = $result['summ_price'];
+    $rate_filter = $result['rate_filter'];
+    $name_service = $result['name_service'];
 
-$order_id = $order->getId();
-$currensy_symbol = Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())->getSymbol();
+    $order_id = $order->getId();
+    $currensy_symbol = Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())->getSymbol();
 ?>
 
 <form class="my-form" name="shiphawk_form" id="shiphawk_form">
