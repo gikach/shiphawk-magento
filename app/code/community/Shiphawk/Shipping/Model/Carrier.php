@@ -42,14 +42,15 @@ class Shiphawk_Shipping_Model_Carrier
         $toOrder= array();
         $api_error = false;
         $is_multi_zip = (count($grouped_items_by_zip) > 1) ? true : false;
-        $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter();
+
+        $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter($is_admin);
+
         if($is_multi_zip) {
             $rate_filter = 'best';
         }
         try {
             foreach($grouped_items_by_zip as $from_zip=>$items_) {
                 $checkattributes = $helper->checkShipHawkAttributes($from_zip, $to_zip, $items_, $rate_filter);
-
 
                 if(empty($checkattributes)) {
                     $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter);
@@ -68,6 +69,7 @@ class Shiphawk_Shipping_Model_Carrier
                             $toOrder[$responceObject[0]->id]['items'] = $items_;
                             $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
                             $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
+                            $toOrder[$responceObject[0]->id]['carrier'] = $responceObject[0]->summary->carrier;
                         }else{
                             Mage::getSingleton('core/session')->setMultiZipCode(false);
                             foreach ($responceObject as $responce) {
@@ -77,6 +79,7 @@ class Shiphawk_Shipping_Model_Carrier
                                 $toOrder[$responce->id]['items'] = $items_;
                                 $toOrder[$responce->id]['from_zip'] = $from_zip;
                                 $toOrder[$responce->id]['to_zip'] = $to_zip;
+                                $toOrder[$responce->id]['carrier'] = $responce->summary->carrier;
                             }
                         }
                     }
@@ -97,9 +100,19 @@ class Shiphawk_Shipping_Model_Carrier
                     if (!$is_multi_zip) {
                         //add ShipHawk shipping
                         $shipping_price = $helper->getDiscountShippingPrice($service['price']);
-                        $result->append($this->_getShiphawkRateObject($service['name'], $shipping_price, $service['price']));
+                        if($is_admin == false) {
+                            $result->append($this->_getShiphawkRateObject($service['name'], $shipping_price, $service['price']));
+                        }else{
+                            $result->append($this->_getShiphawkRateObject($service['carrier'] . ' - ' . $service['name'], $shipping_price, $service['price']));
+                        }
+
                     }else{
-                        $name_service .= $service['name'] . ', ';
+                        if($is_admin == false) {
+                            $name_service .= $service['name'] . ', ';
+                        }else{
+                            $name_service .= $service['carrier'] . ' - ' . $service['name'] . ', ';
+                        }
+                        //$name_service .= $service['name'] . ', ';
                         $summ_price += $service['price'];
                     }
                 }
@@ -285,6 +298,7 @@ class Shiphawk_Shipping_Model_Carrier
                 foreach($ship_responce as $object) {
                     $services[$object->id]['name'] = $this->_getServiceName($object);
                     $services[$object->id]['price'] = $object->summary->price;
+                    $services[$object->id]['carrier'] = $object->summary->carrier;
                 }
             }
         }

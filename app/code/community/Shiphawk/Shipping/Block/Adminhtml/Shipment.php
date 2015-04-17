@@ -24,7 +24,8 @@ class Shiphawk_Shipping_Block_Adminhtml_Shipment extends Mage_Core_Block_Templat
         $is_multi_zip = (count($grouped_items_by_zip) > 1) ? true : false;
 
 
-        $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter();
+        $is_admin = $helper->checkIsAdmin();
+        $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter($is_admin);
         if($is_multi_zip) {
             $rate_filter = 'best';
         }
@@ -51,6 +52,7 @@ class Shiphawk_Shipping_Block_Adminhtml_Shipment extends Mage_Core_Block_Templat
                         $toOrder[$responceObject[0]->id]['items'] = $items_;
                         $toOrder[$responceObject[0]->id]['from_zip'] = $from_zip;
                         $toOrder[$responceObject[0]->id]['to_zip'] = $to_zip;
+                        $toOrder[$responceObject[0]->id]['carrier'] = $responceObject[0]->summary->carrier;
                     }else{
                         Mage::getSingleton('core/session')->setMultiZipCode(false);
                         foreach ($responceObject as $responce) {
@@ -60,6 +62,7 @@ class Shiphawk_Shipping_Block_Adminhtml_Shipment extends Mage_Core_Block_Templat
                             $toOrder[$responce->id]['items'] = $items_;
                             $toOrder[$responce->id]['from_zip'] = $from_zip;
                             $toOrder[$responce->id]['to_zip'] = $to_zip;
+                            $toOrder[$responce->id]['carrier'] = $responce->summary->carrier;
                         }
                     }
                 }

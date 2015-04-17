@@ -17,6 +17,7 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
             $shiphawk_rate_data = unserialize($order->getData('shiphawk_book_id')); //rate id
 
             $api = Mage::getModel('shiphawk_shipping/api');
+            $helper = Mage::helper('shiphawk_shipping');
 
             $items = Mage::getModel('shiphawk_shipping/carrier')->getShiphawkItems($order);
 
@@ -25,7 +26,8 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
             $shipping_description = $order->getShippingDescription();
 
             $is_multi_zip = (count($grouped_items_by_zip) > 1) ? true : false;
-            $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter();
+            $is_admin = $helper->checkIsAdmin();
+            $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter($is_admin);
             if($is_multi_zip) {
                 $rate_filter = 'best';
             }
@@ -140,10 +142,10 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
             $shipping_description = $order->getShippingDescription();
 
             $is_multi_zip = (count($grouped_items_by_zip) > 1) ? true : false;
-            $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter();
+           /* $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter();
             if($is_multi_zip) {
                 $rate_filter = 'best';
-            }
+            }*/
 
             foreach($shiphawk_rate_data as $rate_id=>$products_ids) {
 
