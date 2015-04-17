@@ -29,7 +29,7 @@ class Shiphawk_Shipping_Block_Adminhtml_Shipment extends Mage_Core_Block_Templat
         if($is_multi_zip) {
             $rate_filter = 'best';
         }
-
+        $result['error'] = '';
         foreach($grouped_items_by_zip as $from_zip=>$items_) {
 
             $checkattributes = $helper->checkShipHawkAttributes($from_zip, $to_zip, $items_, $rate_filter);
