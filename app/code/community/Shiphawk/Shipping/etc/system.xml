@@ -64,7 +64,7 @@
                             <show_in_store>1</show_in_store>
                         </rate_filter>
                         <discount_percentage translate="label">
-                            <label>Discount rates (percentage)</label>
+                            <label>Markup or Discount Percentage</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>23</sort_order>
                             <show_in_default>1</show_in_default>
@@ -73,7 +73,7 @@
                             <comment>possible values from -100 to 100</comment>
                         </discount_percentage>
                         <discount_fixed translate="label">
-                            <label>Discount rates (fixed)</label>
+                            <label>Markup or Discount Flat Amount</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>24</sort_order>
                             <show_in_default>1</show_in_default>
