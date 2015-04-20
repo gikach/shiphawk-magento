@@ -368,7 +368,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
                     }
 
                     try {
-                        Mage::log($arr_res, null, 'tracking.log');
+
                         $crated_time = $this->convertDateTome($arr_res->created_at);
 
                         $comment = $arr_res->resource_name . ': ' . $arr_res->id  . '<br>' . 'Created: ' . $crated_time['date'] . ' at ' . $crated_time['time'] . '<br>' . $event_list;
