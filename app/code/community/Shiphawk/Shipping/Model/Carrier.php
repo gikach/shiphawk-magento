@@ -44,6 +44,7 @@ class Shiphawk_Shipping_Model_Carrier
         $is_multi_zip = (count($grouped_items_by_zip) > 1) ? true : false;
 
         $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter($is_admin);
+        $carrier_type = Mage::getStoreConfig('carriers/shiphawk_shipping/carrier_type');
 
         if($is_multi_zip) {
             $rate_filter = 'best';
@@ -53,7 +54,7 @@ class Shiphawk_Shipping_Model_Carrier
                 $checkattributes = $helper->checkShipHawkAttributes($from_zip, $to_zip, $items_, $rate_filter);
 
                 if(empty($checkattributes)) {
-                    $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter);
+                    $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter, $carrier_type);
                     $ship_responces[] = $responceObject;
 
                     if(is_object($responceObject)) {
@@ -85,6 +86,9 @@ class Shiphawk_Shipping_Model_Carrier
                     }
                 }else{
                     $api_error = true;
+                    foreach($checkattributes as $rate_error) {
+                        Mage::log('ShipHawk error: '.$rate_error, null, 'ShipHawk.log');
+                    }
                 }
 
 

@@ -28,6 +28,7 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
             $is_multi_zip = (count($grouped_items_by_zip) > 1) ? true : false;
             $is_admin = $helper->checkIsAdmin();
             $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter($is_admin);
+            $carrier_type = Mage::getStoreConfig('carriers/shiphawk_shipping/carrier_type');
             if($is_multi_zip) {
                 $rate_filter = 'best';
             }
@@ -36,13 +37,13 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                     $is_rate = false;
                     //если $is_multi_zip то используем  $rate_filter = best значит в респонсе будет всего один метод
                     if(($is_multi_zip)||($rate_filter == 'best')) {
-                        $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter);
+                        $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter, $carrier_type);
                     // get only one method for each group of product
                         $rate_id = $responceObject[0]->id;
                         $is_rate = true;
 
                     }else{
-                        $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter);
+                        $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter, $carrier_type);
 
                         $original_shipping_price = $order->getShiphawkShippingAmount();
                         foreach ($responceObject as $responce) {

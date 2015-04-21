@@ -1,7 +1,7 @@
 <?php
 class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 {
-    public function getShiphawkRate($from_zip, $to_zip, $items, $rate_filter) {
+    public function getShiphawkRate($from_zip, $to_zip, $items, $rate_filter, $carrier_type) {
 
         $helper = Mage::helper('shiphawk_shipping');
         $api_key = $helper->getApiKey();
@@ -13,13 +13,25 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
         $curl = curl_init();
 
         //TODO if products has various Origin Location Type ?
-        $items_array = array(
-            'from_zip'=> $from_zip,
-            'to_zip'=> $to_zip,
-            'rate_filter' => $rate_filter,
-            'items' => $items,
-            'from_type' => $from_type
-        );
+        if($carrier_type == '') {
+            $items_array = array(
+                'from_zip'=> $from_zip,
+                'to_zip'=> $to_zip,
+                'rate_filter' => $rate_filter,
+                'items' => $items,
+                'from_type' => $from_type
+            );
+        }else{
+            $items_array = array(
+                'from_zip'=> $from_zip,
+                'to_zip'=> $to_zip,
+                'rate_filter' => $rate_filter,
+                'carrier_type' => $carrier_type,
+                'items' => $items,
+                'from_type' => $from_type
+            );
+        }
+
 
         $items_array =  json_encode($items_array);
 

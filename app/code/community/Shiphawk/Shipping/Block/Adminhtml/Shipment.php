@@ -26,6 +26,7 @@ class Shiphawk_Shipping_Block_Adminhtml_Shipment extends Mage_Core_Block_Templat
 
         $is_admin = $helper->checkIsAdmin();
         $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter($is_admin);
+        $carrier_type = Mage::getStoreConfig('carriers/shiphawk_shipping/carrier_type');
         if($is_multi_zip) {
             $rate_filter = 'best';
         }
@@ -35,7 +36,7 @@ class Shiphawk_Shipping_Block_Adminhtml_Shipment extends Mage_Core_Block_Templat
             $checkattributes = $helper->checkShipHawkAttributes($from_zip, $to_zip, $items_, $rate_filter);
 
             if(empty($checkattributes)) {
-                $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter);
+                $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter, $carrier_type);
                 $ship_responces[] = $responceObject;
 
                 if(is_object($responceObject)) {
