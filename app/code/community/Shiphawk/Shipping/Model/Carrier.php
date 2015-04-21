@@ -316,7 +316,7 @@ class Shiphawk_Shipping_Model_Carrier
         }
 
         if ( ( ( $object->summary->carrier_type == "LTL" ) || ( $object->summary->carrier_type == "3PL" ) || ( $object->summary->carrier_type == "Intermodal" ) ) && ($object->details->price->delivery == 0) ) {
-            return "Curbside delivery (1-2 weeks)";
+            return "Curbside Delivery (1-2 weeks)";
         }
 
         if ( ( ( $object->summary->carrier_type == "LTL" ) || ( $object->summary->carrier_type == "3PL" ) || ( $object->summary->carrier_type == "Intermodal" ) ) && ($object->details->price->delivery > 0) ) {
