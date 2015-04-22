@@ -97,7 +97,8 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
                     'phone_num' => $origin_address_product['origin_phone'] ? $origin_address_product['origin_phone'] : $origin_address['origin_phone'],
                     'city' => $origin_address_product['origin_city'] ? $origin_address_product['origin_city'] : $origin_address['origin_city'],
                     'state' => $origin_address_product['origin_state'] ? $origin_address_product['origin_state'] : $origin_address['origin_state'],
-                    'zipcode' => $origin_address_product['default_origin_zip'] ? $origin_address_product['default_origin_zip'] : $origin_address['default_origin_zip']
+                    'zipcode' => $origin_address_product['default_origin_zip'] ? $origin_address_product['default_origin_zip'] : $origin_address['default_origin_zip'],
+                    'email' => $origin_address_product['origin_email'] ? $origin_address_product['origin_email'] : $origin_address['origin_email']
                 ),
             'destination_address' =>
                 array(
@@ -107,7 +108,8 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
                     'phone_num' => $ship_addr['telephone'],
                     'city' => $ship_addr['city'],
                     'state' => $ship_addr['region'],
-                    'zipcode' => $ship_addr['postcode']
+                    'zipcode' => $ship_addr['postcode'],
+                    'email' => $ship_addr['email']
                 ),
             'billing_address' =>
                 array(
@@ -117,7 +119,8 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
                     'phone_num' => $bill_addr['telephone'],
                     'city' => $bill_addr['city'],
                     'state' => $bill_addr['region'], //'NY',
-                    'zipcode' => $bill_addr['postcode']
+                    'zipcode' => $bill_addr['postcode'],
+                    'email' => $bill_addr['email']
                 ),
             'pickup' =>
                 array(
@@ -167,6 +170,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
         $origin_address['origin_city'] = Mage::getStoreConfig('carriers/shiphawk_shipping/origin_city');
         $origin_address['default_origin_zip'] = Mage::getStoreConfig('carriers/shiphawk_shipping/default_origin');
         $origin_address['origin_phone'] = Mage::getStoreConfig('carriers/shiphawk_shipping/origin_phone');
+        $origin_address['origin_email'] = Mage::getStoreConfig('carriers/shiphawk_shipping/origin_email');
 
         return $origin_address;
     }
@@ -192,6 +196,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
             $origin_address_product['origin_city'] = $shipping_origin->getData('shiphawk_origin_city');
             $origin_address_product['default_origin_zip'] = $shipping_origin->getData('shiphawk_origin_zipcode');
             $origin_address_product['origin_phone'] = $shipping_origin->getData('shiphawk_origin_phonenum');
+            $origin_address_product['origin_email'] = $shipping_origin->getData('shiphawk_origin_email');
             //todo shiphawk_origin_location ?
         }
         catch(Exception $e)
