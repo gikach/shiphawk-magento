@@ -341,5 +341,10 @@ class Shiphawk_Shipping_Model_Carrier
 
     */
 
+    public function isTrackingAvailable()
+    {
+        return true;
+    }
+
 
 }
