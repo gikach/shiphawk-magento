@@ -46,6 +46,9 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
                         case 'cancelled':
                             $comment = "Shipment status changed to Cancelled (" . $crated_time['date'] . " at " . $crated_time['time'] . "). Your shipment has been cancelled successfully.";
                             break;
+                        default:
+                            $comment = "Status was updated to " . $data_from_shiphawk['status'] . " at " . $crated_time['time'];
+
                     }
 
                     $shipment->addComment($comment);
