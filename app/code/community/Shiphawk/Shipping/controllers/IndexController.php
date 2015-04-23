@@ -25,7 +25,7 @@ class Shiphawk_Shipping_IndexController extends Mage_Core_Controller_Front_Actio
             $comment = '';
 
                 $crated_time = $this->convertDateTome($data_from_shiphawk['updated_at']);
-                //todo [event] => shipment.tracking_update
+
                 if($data_from_shiphawk['event'] == 'shipment.status_update') {
                     switch ($data_from_shiphawk['status']) {
                         case 'in_transit':

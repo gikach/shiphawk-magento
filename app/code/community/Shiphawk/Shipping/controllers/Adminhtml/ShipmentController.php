@@ -35,7 +35,7 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
 
             foreach($shiphawk_rate_data as $rate_id=>$products_ids) {
                     $is_rate = false;
-                    //если $is_multi_zip то используем  $rate_filter = best значит в респонсе будет всего один метод
+
                     if(($is_multi_zip)||($rate_filter == 'best')) {
                         $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter, $carrier_type);
                     // get only one method for each group of product

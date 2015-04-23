@@ -44,6 +44,7 @@ class Shiphawk_Shipping_Model_Carrier
         $is_multi_zip = (count($grouped_items_by_zip) > 1) ? true : false;
 
         $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter($is_admin);
+
         $carrier_type = Mage::getStoreConfig('carriers/shiphawk_shipping/carrier_type');
 
         if($is_multi_zip) {

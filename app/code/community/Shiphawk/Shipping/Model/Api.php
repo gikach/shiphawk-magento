@@ -1,7 +1,7 @@
 <?php
 class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 {
-    public function getShiphawkRate($from_zip, $to_zip, $items, $rate_filter, $carrier_type) {
+    public function getShiphawkRate($from_zip, $to_zip, $items, $rate_filter, $carrier_type = '') {
 
         $helper = Mage::helper('shiphawk_shipping');
         $api_key = $helper->getApiKey();
