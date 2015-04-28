@@ -1,4 +1,4 @@
- <?php
+<?php
 
 class Shiphawk_Shipping_Model_Carrier
     extends Mage_Shipping_Model_Carrier_Abstract
@@ -86,8 +86,6 @@ class Shiphawk_Shipping_Model_Carrier
                 }else{
                     $api_error = true;
                 }
-
-
 
             }
 
@@ -188,7 +186,6 @@ class Shiphawk_Shipping_Model_Carrier
 
     public function getShiphawkItems($request) {
         $items = array();
-
         foreach ($request->getAllItems() as $item) {
             $product_id = $item->getProductId();
             $product = Mage::getModel('catalog/product')->load($product_id);

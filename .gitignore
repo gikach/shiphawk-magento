@@ -3,6 +3,7 @@
 app/code/local/Whidegroup/
 app/code/community/Phoenix/
 app/code/community/Cm/
+app/code/community/Plumrocket/
 app/code/core/
 app/design/adminhtml/default/default/
 app/design/frontend/base/
@@ -17,6 +18,8 @@ app/etc/modules/Whidegroup_Trackingtool.xml
 app/etc/modules/Whidegroup_Customerextra.xml
 app/etc/modules/Enterprise_*
 app/etc/modules/Mage_All.xml
+app/etc/modules/Plumrocket_Base.xml
+app/etc/modules/Plumrocket_ShippingTracking.xml
 app/etc/modules/Mage_Api.xml
 app/etc/modules/Mage_Api2.xml
 app/etc/modules/Mage_Authorizenet.xml

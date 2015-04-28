@@ -89,7 +89,6 @@ class Shiphawk_Shipping_Block_Adminhtml_Shipment extends Mage_Core_Block_Templat
                     $summ_price += $service['price'];
                 }
             }
-
             //save rate_id info for Book in PopUP
             Mage::getSingleton('core/session')->setNewShiphawkBookId($toOrder);
 

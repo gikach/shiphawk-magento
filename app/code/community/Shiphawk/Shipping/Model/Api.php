@@ -428,6 +428,44 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 
         //GET /api/v1/shipments/{shipment_id}/status
 
+        $helper = Mage::helper('shiphawk_shipping');
+        $api_key = $helper->getApiKey();
+
+        $shipment_id_track = 1016042;
+        $subscribe_url = $helper->getApiUrl() . 'shipments/' . $shipment_id_track . '/status?api_key=' . $api_key;
+        $callback_url = $helper->getCallbackUrl($api_key);
+
+        //echo $subscribe_url;
+        //https://sandbox.shiphawk.com/api/v1/shipments/1016030/status?api_key=e1919f54fb93f63866f06049d6d45751
+        //{"shipment_id":"1016030","status":"in_transit","status_updates":[],"tracking_number":null}
+//
+        /*     2015-04-17T12:30:43+00:00 DEBUG (7): Array
+         (
+             [ship_id] => 164
+         [protect_code] => b61534
+     )*/
+
+        $items_array = array(
+            'status'=> $callback_url
+        );
+
+
+        $curl = curl_init();
+        $items_array =  json_encode($items_array);
+
+        curl_setopt($curl, CURLOPT_URL, $subscribe_url);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
+        //curl_setopt($curl, CURLOPT_POSTFIELDS, $items_array);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        /*curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($items_array)
+            )
+        );*/
+
+        $resp = curl_exec($curl);
+        $arr_res = json_decode($resp);
+
     }
 
 
