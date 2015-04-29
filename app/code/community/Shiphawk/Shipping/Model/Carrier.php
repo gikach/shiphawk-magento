@@ -195,42 +195,44 @@ class Shiphawk_Shipping_Model_Carrier
             $product_id = $item->getProductId();
             $product = Mage::getModel('catalog/product')->load($product_id);
 
-            $product_qty = (($product->getShiphawkQuantity() > 0)) ? $product->getShiphawkQuantity() : 1;
+            $type_id = $product->getTypeId();
+            if($type_id == 'simple') {
+                $product_qty = (($product->getShiphawkQuantity() > 0)) ? $product->getShiphawkQuantity() : 1;
 
-            //hack for admin shipment in popup
-            $qty_ordered = ($item->getQty() > 0 ) ? $item->getQty() : $item->getData('qty_ordered');
+                //hack for admin shipment in popup
+                $qty_ordered = ($item->getQty() > 0 ) ? $item->getQty() : $item->getData('qty_ordered');
 
-            if($product->getWeight() > 0) {
-                $items[] = array(
-                    'width' => $product->getShiphawkWidth(),
-                    'length' => $product->getShiphawkLength(),
-                    'height' => $product->getShiphawkHeight(),
-                    'weight' => $product->getWeight(),
-                    'value' => $this->getShipHawkItemValue($product),
-                    //'quantity' => $product_qty*$item->getQty(),
-                    'quantity' => $product_qty*$qty_ordered,
-                    'packed' => $this->getIsPacked($product),
-                    'id' => $product->getShiphawkTypeOfProductValue(),
-                    'zip'=> $this->getOriginZip($product),
-                    'product_id'=> $product_id,
-                    'xid'=> $product_id,
-                );
-            }else{
-                $items[] = array(
-                    'width' => $product->getShiphawkWidth(),
-                    'length' => $product->getShiphawkLength(),
-                    'height' => $product->getShiphawkHeight(),
-                    'value' => $this->getShipHawkItemValue($product),
-                    //'quantity' => $product_qty*$item->getQty(),
-                    'quantity' => $product_qty*$qty_ordered,
-                    'packed' => $this->getIsPacked($product),
-                    'id' => $product->getShiphawkTypeOfProductValue(),
-                    'zip'=> $this->getOriginZip($product),
-                    'product_id'=> $product_id,
-                    'xid'=> $product_id,
-                );
+                if($product->getWeight() > 0) {
+                    $items[] = array(
+                        'width' => $product->getShiphawkWidth(),
+                        'length' => $product->getShiphawkLength(),
+                        'height' => $product->getShiphawkHeight(),
+                        'weight' => $product->getWeight(),
+                        'value' => $this->getShipHawkItemValue($product),
+                        //'quantity' => $product_qty*$item->getQty(),
+                        'quantity' => $product_qty*$qty_ordered,
+                        'packed' => $this->getIsPacked($product),
+                        'id' => $product->getShiphawkTypeOfProductValue(),
+                        'zip'=> $this->getOriginZip($product),
+                        'product_id'=> $product_id,
+                        'xid'=> $product_id,
+                    );
+                }else{
+                    $items[] = array(
+                        'width' => $product->getShiphawkWidth(),
+                        'length' => $product->getShiphawkLength(),
+                        'height' => $product->getShiphawkHeight(),
+                        'value' => $this->getShipHawkItemValue($product),
+                        //'quantity' => $product_qty*$item->getQty(),
+                        'quantity' => $product_qty*$qty_ordered,
+                        'packed' => $this->getIsPacked($product),
+                        'id' => $product->getShiphawkTypeOfProductValue(),
+                        'zip'=> $this->getOriginZip($product),
+                        'product_id'=> $product_id,
+                        'xid'=> $product_id,
+                    );
+                }
             }
-
         }
 
         return $items;
