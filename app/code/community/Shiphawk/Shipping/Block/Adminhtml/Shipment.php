@@ -13,7 +13,7 @@ class Shiphawk_Shipping_Block_Adminhtml_Shipment extends Mage_Core_Block_Templat
 
         $grouped_items_by_zip = $carrier->getGroupedItemsByZip($items);
 
-        $error_message = 'Sorry, not all products have necessary ShipHawk fields filled in. Please add necessary data for next products:';
+        $error_message = 'Sorry, not all products have necessary ShipHawk fields filled in. Please add necessary data for next products (or check required attributes):';
 
         $shippingAddress = $order->getShippingAddress();
         $to_zip = $shippingAddress->getPostcode();
@@ -35,6 +35,7 @@ class Shiphawk_Shipping_Block_Adminhtml_Shipment extends Mage_Core_Block_Templat
 
             $checkattributes = $helper->checkShipHawkAttributes($from_zip, $to_zip, $items_, $rate_filter);
 
+            //todo переделать для новой логики орижинов per product !
             if(empty($checkattributes)) {
                 $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter, $carrier_type);
                 $ship_responces[] = $responceObject;
@@ -69,10 +70,21 @@ class Shiphawk_Shipping_Block_Adminhtml_Shipment extends Mage_Core_Block_Templat
                 }
             }else{
                 echo $error_message . '<br />';
+                if(!empty($checkattributes['items']['name']))
                 if(count($checkattributes['items']['name'])>0)
                     foreach($checkattributes['items']['name'] as $names) {
                         echo $names . '<br />';
                     }
+
+                if (!empty($checkattributes['from_zip'])) {
+                    echo 'From Zip' . '<br />';
+                }
+                if (!empty($checkattributes['to_zip'])) {
+                    echo 'To Zip' . '<br />';
+                }
+                if (!empty($checkattributes['rate_filter'])) {
+                    echo 'Rate Filter' . '<br />';
+                }
                 return null;
             }
 
