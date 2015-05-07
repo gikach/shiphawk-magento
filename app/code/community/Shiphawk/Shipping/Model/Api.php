@@ -18,7 +18,8 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
                 'to_zip'=> $to_zip,
                 'rate_filter' => $rate_filter,
                 'items' => $items,
-                'from_type' => $from_type
+                'from_type' => $from_type,
+                'to_type' => 'residential',
             );
         }else{
             $items_array = array(
@@ -27,7 +28,8 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
                 'rate_filter' => $rate_filter,
                 'carrier_type' => $carrier_type,
                 'items' => $items,
-                'from_type' => $from_type
+                'from_type' => $from_type,
+                'to_type' => 'residential',
             );
         }
 
