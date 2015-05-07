@@ -42,11 +42,11 @@ class Shiphawk_Shipping_Model_Carrier
         $toOrder= array();
         $api_error = false;
         $is_multi_zip = false;
-        //todo if origin = origin_per_product,?
+
         if(count($grouped_items_by_zip) > 1)  {
             $is_multi_zip = true;
         }
-        //$is_multi_zip = (count($grouped_items_by_zip) > 1) ? true : false;
+
 
         $rate_filter =  Mage::helper('shiphawk_shipping')->getRateFilter($is_admin);
 
