@@ -34,7 +34,6 @@ document.observe("dom:loaded", function() {
 
                 shiphawk_shipping_origins.parentNode.replaceChild(el, shiphawk_shipping_origins);
 
-                //if mass edit disable input
             },
             onLoading:function(transport)
             {

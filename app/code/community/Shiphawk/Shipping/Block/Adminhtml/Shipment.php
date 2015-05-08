@@ -56,7 +56,9 @@ class Shiphawk_Shipping_Block_Adminhtml_Shipment extends Mage_Core_Block_Templat
 
                     if(is_object($responceObject)) {
                         $api_error = true;
-                        Mage::log('ShipHawk responce: '.$responceObject->error, null, 'ShipHawk.log');
+                        Mage::log('ShipHawk response: ' . $responceObject->error, null, 'ShipHawk.log');
+                        $result['error'] = 'ShipHawk response: ' . $responceObject->error;
+                        return $result;
                     }else{
                         // if $rate_filter = 'best' then it is only one rate
                         if(($is_multi_zip)||($rate_filter == 'best')) {
@@ -123,7 +125,10 @@ class Shiphawk_Shipping_Block_Adminhtml_Shipment extends Mage_Core_Block_Templat
 
                         if(is_object($responceObject)) {
                             $api_error = true;
-                            Mage::log('ShipHawk responce: '.$responceObject->error, null, 'ShipHawk.log');
+
+                            Mage::log('ShipHawk response: ' . $responceObject->error, null, 'ShipHawk.log');
+                            $result['error'] = 'ShipHawk response: ' . $responceObject->error;
+                            return $result;
                         }else{
                             // if $rate_filter = 'best' then it is only one rate
                             if(($is_multi_zip)||($rate_filter == 'best')) {

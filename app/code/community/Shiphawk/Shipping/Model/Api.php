@@ -55,14 +55,10 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 
     public function toBook($order,$rate_id,$products_ids)
     {
-        $ship_addr = array();
-        $bill_addr = array();
+        $ship_addr = $order->getShippingAddress()->getData();
+        $bill_addr = $order->getBillingAddress()->getData();
+        $order_increment_id = $order->getIncrementId();
 
-        if(is_object($order)) {
-            $ship_addr = $order->getShippingAddress()->getData();
-            $bill_addr = $order->getBillingAddress()->getData();
-            $order_increment_id = $order->getIncrementId();
-        }
 
         $api_key = Mage::helper('shiphawk_shipping')->getApiKey();
         $api_url = Mage::helper('shiphawk_shipping')->getApiUrl();
@@ -76,7 +72,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 
         $curl = curl_init();
 
-        $origin_address = $this->_getDefaultOriginData();
+        $default_origin_address = $this->_getDefaultOriginData();
 
         $order_email = $ship_addr['email'];
 
@@ -85,23 +81,15 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
             $order_email = ($administrator_email) ? $administrator_email : $ship_addr['email'];
         }
 
+        $origin_address = $this->getOriginAddress($origin_address_product, $default_origin_address);
+
         $next_bussines_day = date('Y-m-d', strtotime('now +1 Weekday'));
         $items_array = array(
             'rate_id'=> $rate_id,
             'order_email'=> $order_email,
             'xid'=>$order_increment_id,
-            'origin_address' =>//todo origin address ?
-                array(
-                    'first_name' => $origin_address_product['origin_first_name'] ? $origin_address_product['origin_first_name'] : $origin_address['origin_first_name'],
-                    'last_name' => $origin_address_product['origin_last_name'] ? $origin_address_product['origin_last_name'] : $origin_address['origin_last_name'],
-                    'address_line_1' => $origin_address_product['origin_address'] ? $origin_address_product['origin_address'] : $origin_address['origin_address'],
-                    'address_line_2' => $origin_address_product['origin_address2'] ? $origin_address_product['origin_address2'] : $origin_address['origin_address2'],
-                    'phone_num' => $origin_address_product['origin_phone'] ? $origin_address_product['origin_phone'] : $origin_address['origin_phone'],
-                    'city' => $origin_address_product['origin_city'] ? $origin_address_product['origin_city'] : $origin_address['origin_city'],
-                    'state' => $origin_address_product['origin_state'] ? $origin_address_product['origin_state'] : $origin_address['origin_state'],
-                    'zipcode' => $origin_address_product['default_origin_zip'] ? $origin_address_product['default_origin_zip'] : $origin_address['default_origin_zip'],
-                    'email' => $origin_address_product['origin_email'] ? $origin_address_product['origin_email'] : $origin_address['origin_email'] // todo переделать тут имейл дефлтный если нет орижин имейла
-                ),
+            'origin_address' =>
+                $origin_address,
             'destination_address' =>
                 array(
                     'first_name' => $ship_addr['firstname'],
@@ -182,12 +170,12 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 
         try
         {
-            //$order_items = $order->getAllItems();
             // get first product item
             $origin_product = Mage::getModel('catalog/product')->load($products_id);
 
             $shipping_origin_id = $origin_product->getData('shiphawk_shipping_origins');
-            if(($shipping_origin_id)&&(($per_product == false))) {
+            /* if product have origin id, then get origin address from origin model */
+            if($shipping_origin_id) {
 
                 $shipping_origin = Mage::getModel('shiphawk_shipping/origins')->load($shipping_origin_id);
 
@@ -200,21 +188,21 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
                 $origin_address_product['default_origin_zip'] = $shipping_origin->getData('shiphawk_origin_zipcode');
                 $origin_address_product['origin_phone'] = $shipping_origin->getData('shiphawk_origin_phonenum');
                 $origin_address_product['origin_email'] = $shipping_origin->getData('shiphawk_origin_email');
-                //todo shiphawk_origin_location ?
-            }
+            }else{
+                /* if product origin id == default (origin id == '') and product have all per product origin attribute
+                than get origin address from first product in origin group */
+                if($per_product == true) {
 
-            if($per_product == true) {
-
-                $origin_address_product['origin_first_name'] = $origin_product->getData('shiphawk_origin_firstname');
-                $origin_address_product['origin_last_name'] = $origin_product->getData('shiphawk_origin_lastname');
-                $origin_address_product['origin_address'] = $origin_product->getData('shiphawk_origin_addressline1');
-                $origin_address_product['origin_address2'] = $origin_product->getData('shiphawk_origin_addressline2');
-                $origin_address_product['origin_state'] = $origin_product->getData('shiphawk_origin_state');
-                $origin_address_product['origin_city'] = $origin_product->getData('shiphawk_origin_city');
-                $origin_address_product['default_origin_zip'] = $origin_product->getData('shiphawk_origin_zipcode');
-                $origin_address_product['origin_phone'] = $origin_product->getData('shiphawk_origin_phonenum');
-                $origin_address_product['origin_email'] = $origin_product->getData('shiphawk_origin_email');
-                //todo shiphawk_origin_location ?
+                    $origin_address_product['origin_first_name'] = $origin_product->getData('shiphawk_origin_firstname');
+                    $origin_address_product['origin_last_name'] = $origin_product->getData('shiphawk_origin_lastname');
+                    $origin_address_product['origin_address'] = $origin_product->getData('shiphawk_origin_addressline1');
+                    $origin_address_product['origin_address2'] = $origin_product->getData('shiphawk_origin_addressline2');
+                    $origin_address_product['origin_state'] = $origin_product->getData('shiphawk_origin_state');
+                    $origin_address_product['origin_city'] = $origin_product->getData('shiphawk_origin_city');
+                    $origin_address_product['default_origin_zip'] = $origin_product->getData('shiphawk_origin_zipcode');
+                    $origin_address_product['origin_phone'] = $origin_product->getData('shiphawk_origin_phonenum');
+                    $origin_address_product['origin_email'] = $origin_product->getData('shiphawk_origin_email');
+                }
             }
 
         }
@@ -224,6 +212,23 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
         }
 
         return $origin_address_product;
+    }
+
+    protected function getOriginAddress($origin_address_product, $default_origin_address) {
+
+        $origin_address = array(
+            'first_name' => $origin_address_product['origin_first_name'] ? $origin_address_product['origin_first_name'] : $default_origin_address['origin_first_name'],
+            'last_name' => $origin_address_product['origin_last_name'] ? $origin_address_product['origin_last_name'] : $default_origin_address['origin_last_name'],
+            'address_line_1' => $origin_address_product['origin_address'] ? $origin_address_product['origin_address'] : $default_origin_address['origin_address'],
+            'address_line_2' => $origin_address_product['origin_address2'] ? $origin_address_product['origin_address2'] : '',
+            'phone_num' => $origin_address_product['origin_phone'] ? $origin_address_product['origin_phone'] : $default_origin_address['origin_phone'],
+            'city' => $origin_address_product['origin_city'] ? $origin_address_product['origin_city'] : $default_origin_address['origin_city'],
+            'state' => $origin_address_product['origin_state'] ? $origin_address_product['origin_state'] : $default_origin_address['origin_state'],
+            'zipcode' => $origin_address_product['default_origin_zip'] ? $origin_address_product['default_origin_zip'] : $default_origin_address['default_origin_zip'],
+            'email' => $origin_address_product['origin_email'] ? $origin_address_product['origin_email'] : '',
+        );
+
+        return $origin_address;
     }
 
 

@@ -52,15 +52,6 @@
             </shiphawk_shipping>
         </helpers>
         <events>
-            <admin_system_config_changed_section_carriers>
-                <observers>
-                    <shiphawk_shipping_config_save>
-                        <type>singleton</type>
-                        <class>shiphawk_shipping/observer</class>
-                        <method>configSaveAfter</method>
-                    </shiphawk_shipping_config_save>
-                </observers>
-            </admin_system_config_changed_section_carriers>
             <sales_order_place_after>
                 <observers>
                     <shiphawk_shipping_order_place>

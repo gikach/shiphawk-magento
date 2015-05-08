@@ -77,7 +77,7 @@ class Shiphawk_Shipping_Model_Carrier
 
                         if(is_object($responceObject)) {
                             $api_error = true;
-                            Mage::log('ShipHawk responce: '.$responceObject->error, null, 'ShipHawk.log');
+                            Mage::log('ShipHawk response: '.$responceObject->error, null, 'ShipHawk.log');
                         }else{
                             // if $rate_filter = 'best' then it is only one rate
                             if(($is_multi_zip)||($rate_filter == 'best')) {
@@ -130,7 +130,7 @@ class Shiphawk_Shipping_Model_Carrier
 
                             if(is_object($responceObject)) {
                                 $api_error = true;
-                                Mage::log('ShipHawk responce: '.$responceObject->error, null, 'ShipHawk.log');
+                                Mage::log('ShipHawk response: '.$responceObject->error, null, 'ShipHawk.log');
                             }else{
                                 // if $rate_filter = 'best' then it is only one rate
                                 if(($is_multi_zip)||($rate_filter == 'best')) {
@@ -378,11 +378,10 @@ class Shiphawk_Shipping_Model_Carrier
         return ($product_is_packed ? 'true' : 'false');
     }
 
-    /* sort items by origin id todo rename function */
+    /* sort items by origin id */
     public function getGroupedItemsByZip($items) {
         $tmp = array();
         foreach($items as $item) {
-            //$tmp[$item['zip']][] = $item;
             $tmp[$item['origin']][] = $item;
         }
         return $tmp;
