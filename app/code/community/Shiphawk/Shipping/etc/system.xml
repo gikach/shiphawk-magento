@@ -274,10 +274,10 @@
                         </origin_email>
                         <file_import translate="label comment">
                             <label>Import Origins</label>
-                            <comment><![CDATA[File saved in <strong><span style="color: red;">var/uploads</span></strong> folder.]]></comment>
+                            <comment><![CDATA[File saved in <strong><span style="color: red;">var/shiphawk/import</span></strong> folder.]]></comment>
                             <frontend_type>file</frontend_type>
                             <backend_model>adminhtml/system_config_backend_file</backend_model>
-                            <upload_dir>var/uploads</upload_dir>
+                            <upload_dir>var/shiphawk/import</upload_dir>
                             <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
