@@ -428,6 +428,10 @@ class Shiphawk_Shipping_Model_Carrier
             return "Expedited White Glove Delivery (2-3 weeks)";
         }
 
+        if ( $object->summary->carrier_type == "Home Delivery" ) {
+            return "Home Delivery - " . $object->summary->service . " (1-2 weeks)";
+        }
+
         return $object->summary->service;
 
     }
@@ -443,6 +447,14 @@ class Shiphawk_Shipping_Model_Carrier
 
     4. If carrier_type = "LTL","3PL" "Intermodal" AND delivery field inside [details][price] > $0.00 display name should be:
     "Expedited White Glove Delivery (2-3 weeks)"
+
+    Additional rule for naming (both frontend and backend):
+
+    If carrier_type = "Home Delivery" display name should be:
+    "Home Delivery - {{
+    {Service name from received rate}
+    }} (1-2 weeks)"
+    ==> example: Home Delivery - One Man (1-2 weeks)
 
     */
 
