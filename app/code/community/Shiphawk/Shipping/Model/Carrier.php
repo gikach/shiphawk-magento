@@ -180,6 +180,7 @@ class Shiphawk_Shipping_Model_Carrier
                         if($is_admin == false) {
                             $result->append($this->_getShiphawkRateObject($service['name'], $shipping_price, $service['price']));
                         }else{
+                            //todo more information for admin
                             $result->append($this->_getShiphawkRateObject($service['carrier'] . ' - ' . $service['name'], $shipping_price, $service['price']));
                         }
 
@@ -193,6 +194,8 @@ class Shiphawk_Shipping_Model_Carrier
                         $summ_price += $service['price'];
                     }
                 }
+
+
 
                 //save rate_id info for Book
                 Mage::getSingleton('core/session')->setShiphawkBookId($toOrder);
@@ -208,6 +211,7 @@ class Shiphawk_Shipping_Model_Carrier
                     //add ShipHawk shipping
                     $name_service = 'Shipping from multiple locations';
                     $shipping_price = $helper->getDiscountShippingPrice($summ_price);
+                    Mage::getSingleton('core/session')->setSummPrice($summ_price);
                     $result->append($this->_getShiphawkRateObject($name_service, $shipping_price, $summ_price));
                 }
             }
