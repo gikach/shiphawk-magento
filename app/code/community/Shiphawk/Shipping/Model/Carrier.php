@@ -410,7 +410,6 @@ class Shiphawk_Shipping_Model_Carrier
         foreach($ship_responces as $ship_responce) {
             if(is_array($ship_responce)) {
                 foreach($ship_responce as $object) {
-                    Mage::log($object,  null, 'shipObject.log');
                     $services[$object->id]['name'] = $this->_getServiceName($object);
                     $services[$object->id]['price'] = $object->summary->price;
                     $services[$object->id]['carrier'] = $object->summary->carrier;

@@ -45,10 +45,11 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                     }else{
                         $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter, $carrier_type);
 
-                        $original_shipping_price = $order->getShiphawkShippingAmount();
+                        $original_shipping_price = ( string ) trim($order->getShiphawkShippingAmount());
                         foreach ($responceObject as $responce) {
+                            $product_price = ( string ) trim($responce->summary->price);
 
-                            if( $original_shipping_price == $responce->summary->price ) {
+                            if( $original_shipping_price == $product_price ) {
                                 $rate_id = $responce->id;
                                 $is_rate = true;
                                 break;
@@ -66,8 +67,8 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                         $api->_saveShiphawkShipment($shipment);
 
                         // add track
-                        if($track_number = $track_data->shipment_id) {
-                            $api->addTrackNumber($shipment, $track_number);
+                        if($track_data->shipment_id) {
+                            $api->addTrackNumber($shipment, $track_data->shipment_id);
 
                             $api->subscribeToTrackingInfo($shipment->getId());
                         }
