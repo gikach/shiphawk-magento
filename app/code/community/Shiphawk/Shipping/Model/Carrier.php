@@ -74,6 +74,7 @@ class Shiphawk_Shipping_Model_Carrier
 
                     if(empty($checkattributes)) {
                         $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter, $carrier_type);
+
                         $ship_responces[] = $responceObject;
 
                         if(is_object($responceObject)) {
