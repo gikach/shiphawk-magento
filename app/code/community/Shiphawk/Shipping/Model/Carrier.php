@@ -181,7 +181,7 @@ class Shiphawk_Shipping_Model_Carrier
                         if($is_admin == false) {
                             $result->append($this->_getShiphawkRateObject($service['name'], $shipping_price, $service['price']));
                         }else{
-                            //todo more information for admin
+
                             $result->append($this->_getShiphawkRateObject($service['carrier'] . ' - ' . $service['name'] . ' - ' . $service['delivery'] . ' - ' . $service['carrier_type'], $shipping_price, $service['price']));
                         }
 
@@ -189,7 +189,7 @@ class Shiphawk_Shipping_Model_Carrier
                         if($is_admin == false) {
                             $name_service .= $service['name'] . ', ';
                         }else{
-                            //todo more information for admin
+
                             $name_service .= $service['carrier'] . ' - ' . $service['name'] . ' - ' . $service['delivery'] . ' - ' . $service['carrier_type'] .  ', ';
                         }
                         //$name_service .= $service['name'] . ', ';
@@ -368,7 +368,7 @@ class Shiphawk_Shipping_Model_Carrier
         $shipping_origin_id = $product->getData('shiphawk_shipping_origins');
 
         if((empty($product_origin_zip_code))&&(!empty($shipping_origin_id))) {
-            // get zip code froms Shiping Origin
+            // get zip code from Shiping Origin
             $shipping_origin = Mage::getModel('shiphawk_shipping/origins')->load($shipping_origin_id);
             $product_origin_zip_code = $shipping_origin->getData('shiphawk_origin_zipcode');
         }
