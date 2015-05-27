@@ -74,7 +74,8 @@ class Shiphawk_Shipping_Model_Carrier
 
                     if(empty($checkattributes)) {
                         $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_, $rate_filter, $carrier_type);
-
+Mage::log($from_zip, null, 'from-zip.log');
+Mage::log($items_, null, 'from-zip.log');
                         $ship_responces[] = $responceObject;
 
                         if(is_object($responceObject)) {
@@ -128,6 +129,8 @@ class Shiphawk_Shipping_Model_Carrier
 
                         if(empty($checkattributes)) {
                             $responceObject = $api->getShiphawkRate($from_zip, $to_zip, $items_per_product, $rate_filter, $carrier_type);
+                            Mage::log($from_zip, null, 'from-zip.log');
+                            Mage::log($items_, null, 'from-zip.log');
                             $ship_responces[] = $responceObject;
 
                             if(is_object($responceObject)) {
