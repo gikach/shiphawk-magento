@@ -1,14 +1,12 @@
 <?php
 class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
 {
-    public function getShiphawkRate($from_zip, $to_zip, $items, $rate_filter, $carrier_type = '') {
+    public function getShiphawkRate($from_zip, $to_zip, $items, $rate_filter, $carrier_type = '', $location_type) {
 
         $helper = Mage::helper('shiphawk_shipping');
         $api_key = $helper->getApiKey();
         //$url_api_rates = $helper->getApiUrl() . 'rates/full?api_key=' . $api_key;
         $url_api_rates = $helper->getApiUrl() . 'rates/standard?api_key=' . $api_key;
-
-        $from_type  = Mage::getStoreConfig('carriers/shiphawk_shipping/origin_location_type');
 
         $curl = curl_init();
 
@@ -18,7 +16,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
                 'to_zip'=> $to_zip,
                 'rate_filter' => $rate_filter,
                 'items' => $items,
-                'from_type' => $from_type,
+                'from_type' => $location_type,
                 'to_type' => 'residential',
             );
         }else{
@@ -28,7 +26,7 @@ class Shiphawk_Shipping_Model_Api extends Mage_Core_Model_Abstract
                 'rate_filter' => $rate_filter,
                 'carrier_type' => $carrier_type,
                 'items' => $items,
-                'from_type' => $from_type,
+                'from_type' => $location_type,
                 'to_type' => 'residential',
             );
         }

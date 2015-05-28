@@ -37,13 +37,23 @@ class Shiphawk_Shipping_Adminhtml_ShipmentController extends Mage_Adminhtml_Cont
                     $is_rate = false;
 
                     if(($is_multi_zip)||($rate_filter == 'best')) {
-                        $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter, $carrier_type);
+                        /* get zipcode and location type from first item in grouped by origin (zipcode) products */
+                        $from_zip = $products_ids['items'][0]['zip'];
+                        $location_type = $products_ids['items'][0]['location_type'];
+
+                        //$responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter, $carrier_type);
+                        $responceObject = $api->getShiphawkRate($from_zip, $products_ids['to_zip'], $products_ids['items'], $rate_filter, $carrier_type, $location_type);
                     // get only one method for each group of product
                         $rate_id = $responceObject[0]->id;
                         $is_rate = true;
 
                     }else{
-                        $responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter, $carrier_type);
+                        /* get zipcode and location type from first item in grouped by origin (zipcode) products */
+                        $from_zip = $products_ids['items'][0]['zip'];
+                        $location_type = $products_ids['items'][0]['location_type'];
+
+                        $responceObject = $api->getShiphawkRate($from_zip, $products_ids['to_zip'], $products_ids['items'], $rate_filter, $carrier_type, $location_type);
+                        //$responceObject = $api->getShiphawkRate($products_ids['from_zip'], $products_ids['to_zip'], $products_ids['items'], $rate_filter, $carrier_type);
 
                         $original_shipping_price = ( string ) trim($order->getShiphawkShippingAmount());
                         foreach ($responceObject as $responce) {
